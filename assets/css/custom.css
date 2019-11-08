@@ -117,6 +117,10 @@
     background-color: #fff;
 }
 
+.right-header-detail {
+    position: relative;
+}
+
 .right-header-detail p {
     margin: 0px;
     color: #333;
@@ -131,11 +135,11 @@
 
 .rightside-left-chat, .rightside-right-chat {
     float: left;
-    width: 80%;
+    width: 100%;
     position: relative;
 }
 
-.rightside-right-chat {
+.rightside-right-chat .chat-item {
     float: right;
     margin-right: 35px;
 }
@@ -145,11 +149,13 @@
     background-color: #FFFFFF;
     position: relative;
     padding-bottom: 100px;
+    overflow-x: hidden;
 }
 
 .right-header-contentChat ul li {
     list-style: none;
     margin-top: 20px;
+    position: relative;
 }
 
 .right-header-contentChat .rightside-left-chat p, .right-header-contentChat .rightside-right-chat p {
@@ -174,7 +180,7 @@
     background-color: rgba(255, 255, 255, 0.9);
     position: absolute;
     bottom: 0;
-    z-index: 9000;
+    z-index: 1000;
 }
 
 .right-chat-textbox::before {
@@ -250,7 +256,7 @@
     z-index: 1;
 }
 
-.rightside-right-chat:before {
+.rightside-right-chat .chat-item:before {
     content: " ";
     position: absolute;
     top: 14px;
@@ -292,7 +298,7 @@
     color: white;
 }
 
-.btn-theme:hover, .btn-theme:focus, .btn-theme.focus{
+.btn-theme:hover, .btn-theme:focus, .btn-theme.focus {
     color: white;
     background-color: #006CDF;
 }
@@ -302,29 +308,72 @@ a {
     text-decoration: none;
 }
 
-.media.comment .media-object{
+.media.comment .media-object {
     border-radius: 50%;
     border: 2px solid #007bff;
     width: 35px;
     height: 35px;
 }
 
-.media.comment .media-content{
+.media.comment .media-content {
     background-color: #f1f1f1;
     padding: 8px 7px 8px 7px;
     border-radius: 10px;
 }
 
-
-.left-chat > ul > li{
+.left-chat > ul > li {
     position: relative;
 }
 
-.chat-left-unread-count{
+.chat-left-unread-count {
     position: absolute;
     right: 10px;
     top: 40%;
     background-color: #FF0400;
     font-weight: normal;
     padding: 3px 6px;
+}
+
+.right-header-detail-control {
+    float: right;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    padding-top: 5px;
+}
+
+
+
+.right-header-detail-control > a {
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.msg-checkbox-container {
+    /*display: none;*/
+    position: absolute;
+    float: right;
+    right: 40px;
+    top: 55%;
+    transform: translateX(140px);
+    transition: all 1s;
+}
+
+.chat-selection .msg-checkbox-container {
+    /*display: block;*/
+    transform:translateX(0px)
+}
+
+.chat-selection .chat-item {
+    margin-right: 100px;
+}
+
+.rightside-left-chat .chat-item, .rightside-right-chat .chat-item {
+    width: 80%;
+    position: relative;
+    transition: 0.5s all;
+}
+
+.chat-left-customer > .chat-left-set-customer-id{
+    margin-left: 5px;
 }

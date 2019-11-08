@@ -21,7 +21,7 @@ class ConfigFacebook extends ConfigModel
     public $access_token = '';
     public $access_token_expires_at = 0;
     
-    public function getType()
+    public function type()
     {
         return 'facebook';
     }

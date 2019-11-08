@@ -10,6 +10,7 @@
 namespace tas\social\controllers;
 
 
+use app\models\search\CustomerInfoSearch;
 use tas\social\models\Conversation;
 use tas\social\models\ConversationDetail;
 use tas\social\models\ReplyMessage;
@@ -36,16 +37,17 @@ class MessengerController extends Controller
     public function actionGetConversation($page = 1)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        $per_page                   = 5;
+        $per_page                   = -1;
         
         $query = Conversation::find()->orderBy(['updated_at' => SORT_DESC]);
         
         $provider = new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'defaultPageSize' => $per_page,
-                'page'            => $page - 1,
-                'validatePage'    => false,
+                // 'defaultPageSize' => ,
+                'pageSize'     => $per_page,
+                'page'         => $page - 1,
+                'validatePage' => false,
             ],
         ]);
         
@@ -128,5 +130,48 @@ class MessengerController extends Controller
             'error'   => $error,
             'data'    => $msg,
         ];
+    }
+    
+    public function actionSearchCustomers()
+    {
+        $response            = [];
+        $response['message'] = Yii::t('social', 'Failed to fetch data.');
+        $response['result']  = false;
+        if (Yii::$app->request->isAjax) {
+            $searchModel  = new CustomerInfoSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->get());
+            $dataProvider->setPagination(['pageSize' => 10]);
+            $response['message'] = Yii::t('social', 'Successfully fetched data.');
+            $response['result']  = true;
+            $response['view']    = $this->renderAjax('/customer/index', ['searchModel' => $searchModel, 'dataProvider' => $dataProvider]);
+        }
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        return $response;
+    }
+    
+    public function actionSetCustomer()
+    {
+        $response            = [];
+        $response['message'] = Yii::t('social', 'Failed to set customer.');
+        $response['result']  = false;
+        if (Yii::$app->request->isAjax) {
+            $conversation_id = Yii::$app->request->post('conversation_id');
+            $id_customer     = Yii::$app->request->post('id_customer');
+            $conversation    = Conversation::findOne($conversation_id);
+            if ($conversation != null) {
+                $conversation->id_customer = $id_customer;
+                if ($conversation->save()) {
+                    $response['message'] = Yii::t('social', 'Successfully set customer.');
+                    $response['result']  = true;
+                }
+            }
+            
+        }
+        
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        return $response;
     }
 }

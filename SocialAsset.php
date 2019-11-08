@@ -25,10 +25,12 @@ class SocialAsset extends AssetBundle
     }
     
     public $css = [
+        // 'css/chat.css',
         'css/custom.css',
     ];
     
     public $js = [
+        // 'js/app-bundle.js',
         'js/functions.js',
         'js/chat.js',
     ];

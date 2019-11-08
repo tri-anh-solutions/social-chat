@@ -18,4 +18,15 @@ class m170605_081607_facebook_post extends Migration{
 	public function down(){
 		$this->dropTable('facebook_post');
 	}
+	
+	/*
+	// Use safeUp/safeDown to run migration code within a transaction
+	public function safeUp()
+	{
+	}
+
+	public function safeDown()
+	{
+	}
+	*/
 }

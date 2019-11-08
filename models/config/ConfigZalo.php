@@ -15,7 +15,7 @@ class ConfigZalo extends ConfigModel
     public $app_id;
     public $app_secret;
     
-    public function getType()
+    public function type()
     {
         return 'zalo';
     }

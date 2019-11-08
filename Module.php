@@ -23,9 +23,9 @@ class Module extends \yii\base\Module
         
         if (!isset(Yii::$app->i18n->translations['social'])) {
             Yii::$app->i18n->translations['social'] = [
-	            'class'          => 'yii\i18n\PhpMessageSource',
-	            'sourceLanguage' => 'en',
-	            'basePath'       => __DIR__ . '/messages',
+                'class'          => 'yii\i18n\PhpMessageSource',
+                'sourceLanguage' => 'en',
+                'basePath'       => __DIR__ . '/messages',
             ];
         }
     }

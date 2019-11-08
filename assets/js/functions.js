@@ -89,8 +89,9 @@ function renderUserItem(item, type) {
         $(html).attr('data-id', item.conversation_id);
         $(html).attr('data-sender-id', item.sender_id);
         $('.chat-left-detail .chat-left-updated-at', html).text(item.updated_at);
+        $('.chat-left-detail .chat-left-customer-id', html).text(item.customer_name);
         $('.chat-left-detail p', html).text(item.sender_name);
-        if(item.unread_count > 0) {
+        if (item.unread_count > 0) {
             $('.chat-left-unread-count', html).text(item.unread_count);
         }
         switch (item.type) {
@@ -124,6 +125,7 @@ function renderMsgItem(item, type) {
         $('>div', html).addClass(class_name);
         $('.name', html).text(display_name);
         $('small', html).text(item.created_at);
+        $('.msg-checkbox-container .msg-checkbox', html).attr('data-id', item.conversation_detail_id)
 
         switch (item.type) {
             case MSG_TYPE_IMG:

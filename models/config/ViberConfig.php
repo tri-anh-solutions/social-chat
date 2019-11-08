@@ -10,13 +10,11 @@
 namespace tas\social\models\config;
 
 
-class ViberConfig extends ConfigModel
-{
-    public $name;
-    public $avatar;
-    
-    public function getType()
-    {
-        return 'viber';
-    }
+class ViberConfig extends ConfigModel{
+	public $name;
+	public $avatar;
+	
+	public function type(){
+		return 'viber';
+	}
 }

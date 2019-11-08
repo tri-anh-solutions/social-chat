@@ -20,3 +20,8 @@ or add
 ```
 
 to the require section of your `composer.json` file.
+
+
+```bash
+php yii migrate --migration-path=@tas/social/migrations
+```

@@ -60,8 +60,23 @@ $(document).ready(function () {
         CURRENT_LIST_MSG_PAGE++;
         loadChatOldMsgDetail();
     });
+
+    $('.right-header-detail-control').on('click', '#chat-select', function () {
+        $('#chat-select').addClass('hidden');
+        $('#chat-cancel').removeClass('hidden');
+        $('#chat-send-ticket').removeClass('hidden');
+        $('.right-header-contentChat').addClass('chat-selection');
+    });
+
+    $('.right-header-detail-control').on('click', '#chat-cancel', function () {
+        $('#chat-select').removeClass('hidden');
+        $('#chat-cancel').addClass('hidden');
+        $('#chat-send-ticket').addClass('hidden');
+        $('.right-header-contentChat').removeClass('chat-selection');
+        $(".msg-checkbox:checkbox").prop('checked', false);
+    });
 });
-$(window).on('resize',function () {
+$(window).on('resize', function () {
     var height = $(window).height() - 150;
     $('.left-chat').css('height', (height - 163) + 'px');
     $('.right-header-contentChat').css('height', (height - 163) + 'px');
