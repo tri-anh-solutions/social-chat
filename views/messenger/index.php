@@ -20,7 +20,7 @@ use yii\web\View;
 $this->title                   = Yii::t('social','Conversations');
 $this->params['breadcrumbs'][] = $this->title;
 SocialAsset::register($this);
-$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@app/modules/social/assets');
+$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets');
 
 ?>
     <div class="conversation-index">
