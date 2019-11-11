@@ -14,20 +14,19 @@ class ConfigZalo extends ConfigModel
     public $oa_secret;
     public $app_id;
     public $app_secret;
-    
-    public function type()
-    {
-        return 'zalo';
-    }
-    
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        return [
-            [['oa_id', 'oa_secret', 'app_id', 'app_secret'], 'filter', 'filter' => 'trim'],
-            [['oa_id', 'oa_secret', 'app_id', 'app_secret'], 'required'],
-        ];
-    }
+	public $callback_url;
+	
+	public function type(){
+		return 'zalo';
+	}
+	
+	/**
+	 * @inheritdoc
+	 */
+	public function rules(){
+		return [
+			[['oa_id','oa_secret','app_id','app_secret','access_token','callback_url'],'filter','filter' => 'trim'],
+			[['oa_id','oa_secret','app_id','app_secret'],'required'],
+		];
+	}
 }
