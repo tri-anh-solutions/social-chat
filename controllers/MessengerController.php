@@ -18,7 +18,6 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\Response;
-use const SORT_DESC;
 
 /** @noinspection LongInheritanceChainInspection */
 
