@@ -10,14 +10,14 @@
 namespace tas\social\controllers;
 
 
-use tas\social\components\FacebookHelper;
-use tas\social\models\config\ConfigFacebook;
-use tas\social\models\config\ConfigZalo;
 use Exception;
 use Facebook\Authentication\AccessToken;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook;
+use tas\social\components\FacebookHelper;
+use tas\social\models\config\ConfigFacebook;
+use tas\social\models\config\ConfigZalo;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
@@ -61,15 +61,17 @@ class ConfigController extends Controller{
 			$facebook_config->update();
 			Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
 		}
-		
-		$fb                 = new Facebook([
-			'app_id'     => $facebook_config->app_id,
-			'app_secret' => $facebook_config->app_secret,
-		]);
-		$helper             = $fb->getRedirectLoginHelper();
-		$permissions        = ['manage_pages','pages_messaging']; // optional
-		$facebook_login_url = Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/config/facebook-login']);
-		$loginUrl           = Html::a('Authorized',$helper->getLoginUrl($facebook_login_url,$permissions));
+		$loginUrl = '';
+		if(!empty($facebook_config->app_id)){
+			$fb                 = new Facebook([
+				'app_id'     => $facebook_config->app_id,
+				'app_secret' => $facebook_config->app_secret,
+			]);
+			$helper             = $fb->getRedirectLoginHelper();
+			$permissions        = ['manage_pages','pages_messaging']; // optional
+			$facebook_login_url = Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/config/facebook-login']);
+			$loginUrl           = Html::a('Authorized',$helper->getLoginUrl($facebook_login_url,$permissions));
+		}
 		
 		$fb_logged = false;
 		/** @var \Facebook\Authentication\AccessToken $fb_access_token */
@@ -157,37 +159,6 @@ class ConfigController extends Controller{
 			return '';
 		}
 	}
-	
-	// public function actionSubscriptions()
-	// {
-	//     $facebook_config = new ConfigFacebook();
-	//     try {
-	//         $fb = new Facebook([
-	//             'app_id'     => $facebook_config->app_id,
-	//             'app_secret' => $facebook_config->app_secret,
-	//         ]);
-	//         /** @var \Facebook\Authentication\AccessToken $fb_access_token */
-	//         $fb_access_token = Yii::$app->session->get('facebook_access_token');
-	//         // return $fb->getApp()->getAccessToken();
-	//         try {
-	//             // Returns a `Facebook\FacebookResponse` object
-	//             /** @var \Facebook\FacebookResponse $response */
-	//             $response = $fb->get(
-	//                 '/' . $facebook_config->app_id . '/subscriptions',
-	//                 $fb->getApp()->getAccessToken()
-	//             );
-	//             print_r($response->getBody());
-	//         } catch (FacebookSDKException $e) {
-	//             echo 'Facebook SDK returned an error: ' . $e->getMessage();
-	//             exit;
-	//         }
-	//         $graphNode = $response->getGraphNode();
-	//         // print_r($graphNode);
-	//     } catch (FacebookSDKException $e) {
-	//         Yii::error($e);
-	//         return '';
-	//     }
-	// }
 	
 	/**
 	 * @param string $action
