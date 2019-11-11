@@ -25,3 +25,13 @@ to the require section of your `composer.json` file.
 ```bash
 php yii migrate --migration-path=@tas/social/migrations
 ```
+
+add config module
+
+```php
+'modules'      => [
+    'social' => [
+        'class' => 'tas\social\Module',
+    ],
+],
+```
