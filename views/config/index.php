@@ -34,7 +34,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
 <?php $form = ActiveForm::begin([
     'options'     => ['class' => 'form-horizontal'],
     'fieldConfig' => [
-        'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div>",
+        'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div><div class='col-xs-12'>{hint}</div>",
         'labelOptions' => ['class' => 'col-lg-3 control-label'],
     ],
 ]); ?>
