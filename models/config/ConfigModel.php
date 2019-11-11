@@ -106,4 +106,11 @@ abstract class ConfigModel extends Model{
 		
 		return false;
 	}
+	
+	/**
+	 * @return string
+	 */
+	public function getType(){
+		return $this->type();
+	}
 }
