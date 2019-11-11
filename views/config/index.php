@@ -57,7 +57,8 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                 <?= $form->field($zalo_config, 'oa_secret')->textInput(['maxlength' => true]) ?>
                 <?= $form->field($zalo_config, 'app_id')->textInput(['maxlength' => true]) ?>
                 <?= $form->field($zalo_config, 'app_secret')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($zalo_config, 'access_token')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($zalo_config, 'access_token')->textInput(['maxlength' => true])->hint(Html::a(Yii::t('app','Get Access Token'),'https://developers.zalo.me/tools/explorer',['target' => '_blank'])
+                ) ?>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-6 text-right">

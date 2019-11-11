@@ -47,7 +47,7 @@ abstract class ConfigModel extends Model{
 	 */
 	private function getConfig($key){
 		$cache     = Yii::$app->cache;
-		$cache_key = 'config_' . $this->type . '_' . $key;
+		$cache_key = 'social_config_' . $this->type . '_' . $key;
 		if(($result = $cache->get($cache_key)) == false){
 			$result = SocialConfig::findOne([
 				'key'  => $key,
@@ -79,7 +79,7 @@ abstract class ConfigModel extends Model{
 		$result->value = $val;
 		if($result->save()){
 			$cache     = Yii::$app->cache;
-			$cache_key = 'config_' . $this->type . '_' . $key;
+			$cache_key = 'social_config_' . $this->type . '_' . $key;
 			$cache->delete($cache_key);
 			
 			return true;
