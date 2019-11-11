@@ -14,6 +14,7 @@ class ConfigZalo extends ConfigModel
     public $oa_secret;
     public $app_id;
     public $app_secret;
+    public $access_token;
 	public $callback_url;
 	
 	public function type(){
