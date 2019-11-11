@@ -13,7 +13,7 @@
     "require": {
         "yiisoft/yii2": "~2.0.0",
         "yiisoft/yii2-httpclient": "^2.0",
-        "zaloplatform/zalo-php-sdk": "^1.0",
+        "zaloplatform/zalo-php-sdk": "^2.0",
         "bogdaan/viber-bot-php": "^0.0.10",
         "facebook/graph-sdk": "^5.6"
     },
