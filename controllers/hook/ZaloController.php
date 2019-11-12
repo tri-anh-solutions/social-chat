@@ -112,7 +112,7 @@ class ZaloController extends Controller{
 		$fromuid     = Yii::$app->request->post('sender')['id'];
 		$receiver_id = Yii::$app->request->post('recipient')['id'];
 		$msgid       = Yii::$app->request->post('message')['msg_id'];
-		$message     = Yii::$app->request->post('message')['text'];
+		$message     = Yii::$app->request->post('message')['text'] ?? '';
 		$timestamp   = Yii::$app->request->post('timestamp');
 		$attachments = Yii::$app->request->post('attachments');
 		//$href        = Yii::$app->request->post('href');
@@ -146,7 +146,7 @@ class ZaloController extends Controller{
 		}
 		
 		$conversation->sender_id     = $fromuid;
-		$conversation->sender_name   = $sender['data']['displayName'];
+		$conversation->sender_name   = $sender['data']['display_name'];
 		$conversation->receiver_id   = $receiver_id;
 		$conversation->receiver_name = 'me';
 		$conversation->type          = Conversation::TYPE_ZALO;
