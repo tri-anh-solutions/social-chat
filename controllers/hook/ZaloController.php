@@ -114,7 +114,7 @@ class ZaloController extends Controller{
 		$msgid       = Yii::$app->request->post('message')['msg_id'];
 		$message     = Yii::$app->request->post('message')['text'] ?? '';
 		$timestamp   = Yii::$app->request->post('timestamp');
-		$attachments = Yii::$app->request->post('attachments');
+		$attachments = Yii::$app->request->post('message')['attachments']??[];
 		//$href        = Yii::$app->request->post('href');
 		//$thumb       = Yii::$app->request->get('thumb');
 		
