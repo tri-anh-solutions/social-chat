@@ -42,7 +42,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                     <div class="row">
                         <div class="col-md-12 right-header">
                             <div class="right-header-img">
-                                <img src="<?=$directoryAsset;?>/images/businessman.png">
+                                <img src="<?=$directoryAsset?>/images/businessman.png">
                             </div>
                             <div class="right-header-detail">
                                 <p></p>
@@ -57,7 +57,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                     <div class="row">
                         <div class="col-md-12 right-header-contentChat">
                             <div class="load-more-text text-center" style="display: none;"><a id="load-more-msg" href="#"><?=Yii::t('social',
-                                        'load old message');?></a></div>
+										'load old message');?></a></div>
                             <div class="load-more-loading text-center" style="display: none;"><i
                                         class="fa fa-refresh fa-spin"></i> <?=Yii::t('social','loading ...');?>
                             </div>
@@ -83,10 +83,12 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
             <div class="chat-left-detail">
                 <p></p>
                 <span class="chat-left-updated-at"></span>
-                <span class="chat-left-customer"><span class="chat-left-customer-id"></span><a href="javascript:void(0)"
-                                                                                               class="chat-left-set-customer-id"><?=Yii::t
-                        ('app','Set customer')
-                        ?></a></span>
+				<?php if(class_exists('app\models\CustomerInfo')): ?>
+                    <span class="chat-left-customer"><span class="chat-left-customer-id"></span><a href="javascript:void(0)"
+                                                                                                   class="chat-left-set-customer-id"><?=Yii::t
+							('app','Set customer')
+							?></a></span>
+				<?php endif; ?>
             </div>
             <span class="badge chat-left-unread-count"></span>
 
@@ -109,12 +111,12 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
         </li>
     </div>
 <?php Modal::begin([
-    'id'      => 'messenger-modal',
-    'size'    => Modal::SIZE_LARGE,
-    'options' => [
-        'style' => ['z-index' => 99999],
-    ],
-    'header'  => '<h4 id="messenger-modal-title"></h4>',
+	'id'      => 'messenger-modal',
+	'size'    => Modal::SIZE_LARGE,
+	'options' => [
+		'style' => ['z-index' => 99999],
+	],
+	'header'  => '<h4 id="messenger-modal-title"></h4>',
 ]) ?>
     <div id="messenger-modal-content">
 
