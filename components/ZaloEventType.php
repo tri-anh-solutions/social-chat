@@ -12,15 +12,15 @@ namespace tas\social\components;
 
 class ZaloEventType
 {
-    const SENDMSG         = 'sendmsg';
-    const SENDIMAGEMSG    = 'sendimagemsg';
-    const SENDLINKMSG     = 'sendlinkmsg';
-    const SENDVOICEMSG    = 'sendvoicemsg';
-    const SENDLOCATIONMSG = 'sendlocationmsg';
-    const SENDSTICKERMSG  = 'sendstickermsg';
-    const SENDGIFMSG      = 'sendgifmsg';
-    const FOLLOW          = 'follow';
-    const UNFOLLOW        = 'unfollow';
-    const MSG_DELIVERED   = 'msg_delivered';
-    const OS_SEND_MSG     = 'os_send_msg';
+	const SEND_MSG          = 'user_send_text';
+	const SEND_IMAGE_MSG    = 'user_send_image';
+	const SEND_LINK_MSG     = 'user_send_link';
+	const SEND_VOICE_MSG    = 'sendvoicemsg';
+	const SEND_LOCATION_MSG = 'sendlocationmsg';
+	const SEND_STICKER_MSG  = 'user_send_sticker';
+	const SEND_GIF_MSG      = 'sendgifmsg';
+	const FOLLOW            = 'follow';
+	const UNFOLLOW          = 'unfollow';
+	const MSG_DELIVERED     = 'msg_delivered';
+	const OS_SEND_MSG       = 'os_send_msg';
 }
