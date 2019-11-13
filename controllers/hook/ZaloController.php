@@ -51,7 +51,7 @@ class ZaloController extends Controller{
 				return $this->saveMsgSticker();
 				break;
 			case ZaloEventType::SEND_LINK_MSG;
-				return $this->saveMsgSticker();
+				return $this->saveMsgLink();
 				break;
 			default :
 				return '';
