@@ -24,7 +24,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
 
 ?>
     <div class="conversation-index">
-        <div class="container-fluid main-section">
+        <div id="chatApp" class="container-fluid main-section">
             <div class="row">
                 <div class="col-md-3 col-sm-3 col-xs-12 left-sidebar">
                     <div class="input-group searchbox">
@@ -73,7 +73,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                     </div>
                 </div>
             </div>
-        </div
+        </div>
     </div>
     <div id="user-template" style="display: none;">
         <li>
@@ -123,134 +123,37 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
     </div>
 <?php Modal::end() ?>
 <?php
-$search_customer_url     = Url::to(['messenger/search-customers']);
-$set_customer_url        = Url::to(['messenger/set-customer']);
-$conversation_url        = Url::to(['messenger/get-conversation']);
-$send_msg_url            = Url::to(['messenger/send-msg']);
-$conversation_detail_url = Url::to(['messenger/get-conversation-detail']);
-$send_ticket_url         = Url::to(['/feedback/create']);
-$zalo_logo               = "$directoryAsset/images/zalo.jpg";
-$viber_logo              = "$directoryAsset/images/viber.jpg";
-$facebook_logo           = "$directoryAsset/images/facebook.jpg";
-$type_fb                 = Conversation::TYPE_FACEBOOK;
-$type_viber              = Conversation::TYPE_VIBER;
-$type_zalo               = Conversation::TYPE_ZALO;
 
-$msg_type_text = ConversationDetail::TYPE_TEXT;
-$msg_type_img  = ConversationDetail::TYPE_IMG;
-$msg_type_link = ConversationDetail::TYPE_LINK;
-$js            = <<<JS
-var CONVERSATION_URL = '{$conversation_url}';
-var CONVERSATION_DETAIL_URL = '{$conversation_detail_url}';
-var SEND_TICKET_URL = '{$send_ticket_url}';
-var SEND_MSG_URL = '{$send_msg_url}';
-var ZALO_LOGO = '{$zalo_logo}';
-var FACEBOOK_LOGO = '{$facebook_logo}';
-var VIBER_LOGO = '{$viber_logo}';
-var TYPE_FB = {$type_fb};
-var TYPE_VIBER = {$type_viber};
-var TYPE_ZALO = {$type_zalo};
-var MSG_TYPE_TEXT = '{$msg_type_text}';
-var MSG_TYPE_IMG = '{$msg_type_img}';
-var MSG_TYPE_LINK = '{$msg_type_link}';
-var user_template = $('#user-template li:first');
-var msg_template = $('#msg-template li:first');
+$options = json_encode([
+	'urls'     => [
+		'conversation'       => Url::to(['messenger/get-conversation']),
+		'conversationDetail' => Url::to(['messenger/get-conversation-detail']),
+		'sendTicket'         => Url::to(['/feedback/create']),
+		'sendMsg'            => Url::to(['messenger/send-msg']),
+		'searchCustomer'     => Url::to(['messenger/search-customers']),
+		'setCustomer'        => Url::to(['messenger/set-customer']),
+		'lock'               => '#',
+	],
+	'chatType' => [
+		'facebook' => Conversation::TYPE_FACEBOOK,
+		'viber'    => Conversation::TYPE_VIBER,
+		'zalo'     => Conversation::TYPE_ZALO,
+	],
+	'logo'     => [
+		'facebook' => "$directoryAsset/images/facebook.jpg",
+		'viber'    => "$directoryAsset/images/viber.jpg",
+		'zalo'     => "$directoryAsset/images/zalo.jpg",
+	],
+	'msgType'  => [
+		'text' => ConversationDetail::TYPE_TEXT,
+		'img'  => ConversationDetail::TYPE_IMG,
+		'link' => ConversationDetail::TYPE_LINK,
+	],
+	'modal'    => '#messenger-modal',
+]);
 
-var CURRENT_USER_ID = 0;
-var CURRENT_LIST_USER_PAGE = 1;
-var CURRENT_LIST_MSG_PAGE = 1;
-var SENDER_ID = '';
-var SENDER_NAME = '';
-var LIST_USER;
 
+$js = <<<JS
+new $.Chat({$options});
 JS;
 $this->registerJs($js,View::POS_END);
-$search_customer_js = <<< JS
-var current_chat_id = null;
-$(document).on('click', '.chat-left-set-customer-id', function () {
-    current_chat_id = $(this).parent().parent().parent().attr('data-id');
-    console.log(current_chat_id);
-    $.ajax({url: "{$search_customer_url}"})
-        .done(function (response) {
-            if (response.result && response.result === true && response.view) {
-                $('#messenger-modal-content').html(response.view);
-                $('#messenger-modal-title').html('Select customer');
-                $('#messenger-modal').modal('show');
-            } else {
-                alert(response.message);
-            }
-        })
-        .fail(function () {
-        });
-});
-
-$('#chat-send-ticket').on('click', function () {
-    var checkedMessages = $('.msg-checkbox:checked');
-    if (checkedMessages.length > 0) {
-        var data = [];
-        for (var i = 0; i < checkedMessages.length; i++) {
-            var checkBox = checkedMessages[i];
-            console.log(checkBox);
-            if (checkBox !== null && checkBox !== undefined) {
-                data.push(checkBox.getAttribute('data-id'));
-            }
-        }
-        if (data.length > 0) {
-            var params = encodeURIComponent(JSON.stringify(data));
-            var url = SEND_TICKET_URL + '?conversation_detail_ids=' + params;
-            var win = window.open(url, '_blank');
-            win.focus();
-        }
-    } else {
-        alert("Please select messages.");
-    }
-});
-
-$('#messenger-modal-content').on('click', '.pagination a', function () {
-    $.ajax({url: $(this).attr('href')})
-        .done(function (response) {
-            if (response.result && response.result === true && response.view) {
-                $('#messenger-modal-content').html(response.view);
-            } else {
-                alert(response.message);
-            }
-        })
-        .fail(function () {
-        });
-    return false;
-});
-
-$('#messenger-modal-content').on('beforeSubmit', '#messenger-customer-search-form', function () {
-    var form = $(this);
-    $.ajax({url: "{$search_customer_url}", data: form.serialize()})
-        .done(function (response) {
-            if (response.result && response.result === true && response.view) {
-                $('#messenger-modal-content').html(response.view);
-            } else {
-                alert(response.message);
-            }
-        })
-        .fail(function () {
-        });
-    return false;
-});
-
-function setCustomer(id_customer, name) {
-    var data = {'conversation_id': current_chat_id, 'id_customer': id_customer};
-    $.ajax({url: "{$set_customer_url}", data: data, method: 'POST'})
-        .done(function (response) {
-            if (response.result && response.result === true) {
-                var item = $('.left-chat').find('li[data-id="' + current_chat_id + '"]').find('.chat-left-customer-id:first');
-                if (item !== undefined) {
-                    item.html(name);
-                    $('#messenger-modal').modal('hide');
-                }
-            } else {
-                alert(response.message);
-            }
-        })
-        .fail(function () {
-        });
-}
-JS;
-$this->registerJs($search_customer_js,View::POS_END);
