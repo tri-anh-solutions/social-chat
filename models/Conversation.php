@@ -3,6 +3,8 @@
 namespace tas\social\models;
 
 use app\models\CustomerInfo;
+use app\models\User;
+use app\modules\social\models\ConversationDetail;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -26,6 +28,8 @@ use function class_exists;
  * @property string                   $typeDisplay
  * @property int                      $id_customer
  * @property \app\models\CustomerInfo $customer
+ * @property int                      $locked_by
+ * @property \app\models\User         $lockedBy
  */
 class Conversation extends ActiveRecord{
 	const TYPE_FACEBOOK = 1;
@@ -44,7 +48,7 @@ class Conversation extends ActiveRecord{
 	 */
 	public function rules(){
 		return [
-			[['type','message_count','unread_count','created_at','updated_at'],'integer'],
+			[['type','message_count','unread_count','created_at','updated_at','locked_by'],'integer'],
 			[['sender_id','sender_name','receiver_id','receiver_name'],'string','max' => 255],
 			['unread_count','default','value' => 1],
 		];
@@ -115,20 +119,34 @@ class Conversation extends ActiveRecord{
 		return [
 			'conversation_id',
 			'sender_id',
+			'locked_by',
 			'sender_name',
 			'type',
 			'message_count',
 			'unread_count',
-			'updated_at'    => function($model){
+			'updated_at'     => function(self $model){
 				return Yii::$app->formatter->asDate($model->updated_at);
 			},
-			'created_at'    => function($model){
+			'created_at'     => function(self $model){
 				return Yii::$app->formatter->asDate($model->created_at);
 			},
 			'id_customer',
-			'customer_name' => function($model){
+			'customer_name'  => function(self $model){
 				return $model->customer !== null ? $model->customer->fullName : '';
 			},
+			'locked_name'    => function(self $model){
+				return $model->lockedBy !== null ? $model->lockedBy->username : '';
+			},
+			'allow_transfer' => function(self $model){
+				return $model->locked_by && $model->locked_by == Yii::$app->user->id;
+			},
 		];
+	}
+	
+	/**
+	 * @return \app\models\User|\yii\db\ActiveQuery
+	 */
+	public function getLockedBy(){
+		return $this->hasOne(User::class,['id' => 'locked_by']);
 	}
 }

@@ -13,7 +13,6 @@ use tas\social\models\ConversationDetail;
 use tas\social\SocialAsset;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
-use yii\web\View;
 
 /* @var $this \yii\web\View */
 
@@ -81,17 +80,25 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                 <img src="">
             </div>
             <div class="chat-left-detail">
-                <p></p>
-                <span class="chat-left-updated-at"></span>
+                <p class="full-name"></p>
+                <div>
+                    <span class="badge chat-left-unread-count"></span>
+                    <span class="chat-left-updated-at"></span>
+                    <span class="chat-left-locked-by"></span>
+                    <span class="chat-left-lock"><i class="fa fa-lock"></i> </span>
+                    <span class="chat-left-unlock"><i class="fa fa-unlock-alt"></i> </span>
+                    <span class="chat-left-transfer"><i class="fa fa-exchange"></i> </span>
+                </div>
 				<?php if(class_exists('app\models\CustomerInfo')): ?>
-                    <span class="chat-left-customer"><span class="chat-left-customer-id"></span><a href="javascript:void(0)"
-                                                                                                   class="chat-left-set-customer-id"><?=Yii::t
-							('app','Set customer')
-							?></a></span>
+                    <div class="chat-left-customer-info">
+                        <span class="chat-left-customer-name">
+                        </span>
+                        <a href="javascript:void(0)" class="chat-left-set-customer-id" data-id="">
+							<?=Yii::t('app','Set customer')?>
+                        </a>
+                    </div>
 				<?php endif; ?>
             </div>
-            <span class="badge chat-left-unread-count"></span>
-
         </li>
     </div>
     <div id="msg-template" style="display: none;">
@@ -132,7 +139,9 @@ $options = json_encode([
 		'sendMsg'            => Url::to(['messenger/send-msg']),
 		'searchCustomer'     => Url::to(['messenger/search-customers']),
 		'setCustomer'        => Url::to(['messenger/set-customer']),
-		'lock'               => '#',
+		'lock'               => Url::to(['messenger/ajax-lock']),
+		'unlock'             => Url::to(['messenger/ajax-unlock']),
+		'debug'              => YII_ENV_DEV,
 	],
 	'chatType' => [
 		'facebook' => Conversation::TYPE_FACEBOOK,
@@ -156,4 +165,4 @@ $options = json_encode([
 $js = <<<JS
 new $.Chat({$options});
 JS;
-$this->registerJs($js,View::POS_END);
+$this->registerJs($js);

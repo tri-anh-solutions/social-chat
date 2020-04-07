@@ -6,7 +6,7 @@
         var SENDER_ID = '';
         var SENDER_NAME = '';
         var LIST_USER = [];
-        var current_chat_id = null;
+        var CURRENT_CHAT_ID = null;
 
         var settings = $.extend({
             'chatId': '#chatApp',
@@ -16,6 +16,8 @@
                 'sendTicket': '',
                 'sendMsg': '',
                 'lock': '',
+                'unlock': '',
+                'transfer': '',
                 'searchCustomer': '',
                 'setCustomer': ''
             },
@@ -46,18 +48,68 @@
         var msg_template = $("#msg-template>li:first");
         var chatApp = $(settings.chatId);
         var userPanel = $('.left-chat', chatApp);
-        var msgPanel = $('.left-chat', chatApp);
+        var contentPanel = $('.right-header-contentChat', chatApp);
+        var msgPanel = $('.right-chat-textbox', chatApp);
 
         function init() {
-            $(document).on('click', '.chat-left-set-customer-id', function () {
-                current_chat_id = $(this).parent().parent().parent().attr('data-id');
-                console.log(current_chat_id);
+            $(userPanel).on('click', '.chat-left-set-customer-id', function () {
+                CURRENT_CHAT_ID = $(this).attr('data-id');
+                debug('CURRENT_CHAT_ID ==> ' + CURRENT_CHAT_ID);
                 $.ajax({url: settings.urls.searchCustomer})
                     .done(function (response) {
                         if (response.result && response.result === true && response.view) {
                             $('#messenger-modal-content').html(response.view);
                             $('#messenger-modal-title').html('Select customer');
                             $('#messenger-modal').modal('show');
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function () {
+                    });
+            });
+
+            $(userPanel).on('click', '.chat-left-transfer', function () {
+                CURRENT_CHAT_ID = $(this).attr('data-id');
+                debug('CURRENT_CHAT_ID ==> ' + CURRENT_CHAT_ID);
+                $.ajax({url: settings.urls.transfer})
+                    .done(function (response) {
+                        if (response.result && response.result === true && response.view) {
+                            $('#messenger-modal-content').html(response.view);
+                            $('#messenger-modal-title').html('Select customer');
+                            $('#messenger-modal').modal('show');
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function () {
+                    });
+            });
+
+            $(userPanel).on('click', '.chat-left-lock', function () {
+                var data = {'conversation_id':  $(this).attr('data-id')};
+                var item = this;
+                $.ajax({url: settings.urls.lock, data: data, method: 'POST'})
+                    .done(function (response) {
+                        if (response.result && response.result === true) {
+                            alert(response.message);
+                            $(item).hide();
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function () {
+                    });
+            });
+
+            $(userPanel).on('click', '.chat-left-unlock', function () {
+                var data = {'conversation_id':  $(this).attr('data-id')};
+                var item = this;
+                $.ajax({url: settings.urls.unlock, data: data, method: 'POST'})
+                    .done(function (response) {
+                        if (response.result && response.result === true) {
+                            alert(response.message);
+                            $(item).hide();
                         } else {
                             alert(response.message);
                         }
@@ -107,6 +159,7 @@
                 $.ajax({url: settings.urls.searchCustomer, data: form.serialize()})
                     .done(function (response) {
                         if (response.result && response.result === true && response.view) {
+                            debug(response.view);
                             $('#messenger-modal-content').html(response.view);
                         } else {
                             alert(response.message);
@@ -115,6 +168,12 @@
                     .fail(function () {
                     });
                 return false;
+            });
+
+            $('#messenger-modal-content').on('click', '.select-customer', function () {
+                var cusId = $(this).attr('data-id');
+                var fullName = $(this).attr('data-full_name');
+                setCustomer(cusId, fullName);
             });
 
             $('.left-chat').on('click', 'li:not(.active)', function () {
@@ -259,6 +318,7 @@
             if (row.length > 0) {
                 html = row;
                 $('.chat-left-detail .chat-left-updated-at', html).text(item.updated_at);
+                $('.chat-left-detail .chat-left-customer-id', html).text(item.customer_name);
             } else {
                 html = $(html).attr('id', 'chat_item_' + item.conversation_id);
                 if (item.conversation_id == CURRENT_USER_ID) {
@@ -266,11 +326,10 @@
                 }
                 $(html).attr('data-id', item.conversation_id).attr('data-sender-id', item.sender_id);
                 $('.chat-left-detail .chat-left-updated-at', html).text(item.updated_at);
-                $('.chat-left-detail .chat-left-customer-id', html).text(item.customer_name);
+
+
                 $('.chat-left-detail p', html).text(item.sender_name);
-                if (item.unread_count > 0) {
-                    $('.chat-left-unread-count', html).text(item.unread_count);
-                }
+
                 switch (item.type) {
                     case settings.chatType.zalo:
                         $('.chat-left-img img', html).attr('src', settings.logo.zalo);
@@ -289,6 +348,31 @@
                     $('.left-chat ul', chatApp).append(html);
                 }
             }
+            if (item.unread_count > 0) {
+                $('.chat-left-unread-count', html).text(item.unread_count);
+            }
+            $('.chat-left-set-customer-id', html).attr('data-id', item.conversation_id);
+            $('.chat-left-lock', html).attr('data-id', item.conversation_id);
+            $('.chat-left-unlock', html).attr('data-id', item.conversation_id);
+            $('.chat-left-transfer', html).attr('data-id', item.conversation_id);
+            if (item.customer_name.length > 0) {
+                $('.chat-left-set-customer-id', html).hide();
+            }
+            $('.chat-left-detail .chat-left-customer-name', html).text(item.customer_name);
+            $('.chat-left-detail .chat-left-locked-by', html).text(item.locked_name);
+
+            if (item.allow_transfer) {
+                $('.chat-left-detail .chat-left-transfer', html).show();
+                $('.chat-left-detail .chat-left-unlock', html).show();
+            } else {
+                $('.chat-left-detail .chat-left-transfer', html).hide();
+                $('.chat-left-detail .chat-left-unlock', html).hide();
+            }
+            if (item.locked_by) {
+                $('.chat-left-detail .chat-left-lock', html).hide();
+            } else {
+                $('.chat-left-detail .chat-left-lock', html).show();
+            }
         }
 
         function renderMsgItem(item, type) {
@@ -297,7 +381,7 @@
             if (row.length == 0) {
                 html = $(html).attr('id', 'msg_item_' + item.conversation_detail_id);
                 var class_name = ((SENDER_ID.valueOf() != item.sender_id.valueOf()) ? 'rightside-left-chat' : 'rightside-right-chat');
-                var display_name = ((SENDER_ID.valueOf() != item.sender_id.valueOf()) ? 'Agent' : SENDER_NAME);
+                var display_name = ((SENDER_ID.valueOf() != item.sender_id.valueOf()) ? item.sender_name : SENDER_NAME);
                 $(html).attr('data-id', item.conversation_detail_id);
                 $('>div', html).addClass(class_name);
                 $('.name', html).text(display_name);
@@ -349,11 +433,13 @@
         }
 
         function setCustomer(id_customer, name) {
-            var data = {'conversation_id': current_chat_id, 'id_customer': id_customer};
+            var data = {'conversation_id': CURRENT_CHAT_ID, 'id_customer': id_customer};
+            debug('Customer Name => ' + name);
             $.ajax({url: settings.urls.setCustomer, data: data, method: 'POST'})
                 .done(function (response) {
                     if (response.result && response.result === true) {
-                        var item = $('.left-chat').find('li[data-id="' + current_chat_id + '"]').find('.chat-left-customer-id:first');
+                        var item = $('.left-chat').find('li[data-id="' + CURRENT_CHAT_ID + '"]').find('.chat-left-customer-name:first');
+                        $('.left-chat').find('li[data-id="' + CURRENT_CHAT_ID + '"]').find('.chat-left-set-customer-id').hide();
                         if (item !== undefined) {
                             item.html(name);
                             $('#messenger-modal').modal('hide');
