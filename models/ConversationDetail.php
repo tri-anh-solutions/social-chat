@@ -27,7 +27,7 @@ use yii\db\ActiveRecord;
  *
  * @property  Conversation    $conversation
  * @property \app\models\User $user
- * @property string           $sender
+ * @property string           $sender_name
  *
  */
 class ConversationDetail extends \yii\db\ActiveRecord{
@@ -51,7 +51,7 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 		return [
 			[['conversation_id','created_at','type','created_time'],'integer'],
 			[['content'],'string'],
-			[['msg_id','sender_id','sender'],'string','max' => 255],
+			[['msg_id','sender_id','sender_name'],'string','max' => 255],
 			['user_id','default','value' => 0],
 		];
 	}
@@ -77,7 +77,7 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 			$this->user_id = Yii::$app->user ? Yii::$app->user->id : 0;
 		}
 		if($this->user){
-			$this->sender = $this->user->username;
+			$this->sender_name = $this->user->username;
 		}
 		
 		return parent::beforeSave($insert);
