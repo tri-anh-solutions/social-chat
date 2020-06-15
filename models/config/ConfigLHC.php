@@ -12,7 +12,7 @@ class  ConfigLHC extends ConfigModel{
 	public $verify_token;
 	public $token;
 	public $username;
-	public $id_user;
+	public $from_user;
 	public $callback_url;
 	
 	public function type(){
@@ -24,8 +24,8 @@ class  ConfigLHC extends ConfigModel{
 	 */
 	public function rules(){
 		return [
-			[['token','callback_url','verify_token','id_user','username'],'filter','filter' => 'trim'],
-			[['token','callback_url','verify_token','id_user','username'],'required'],
+			[['token','callback_url','verify_token','from_user','username'],'filter','filter' => 'trim'],
+			[['token','callback_url','verify_token','from_user','username'],'required'],
 		];
 	}
 }

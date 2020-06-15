@@ -23,29 +23,31 @@ class LiveHelperChat extends BaseObject{
 	public $url      = '';
 	public $username = '';
 	public $token    = '';
-	
+	/** @var ConfigLHC */
 	private $_config;
+	
 	public function init(){
 		parent::init();
 		$this->_config = new ConfigLHC();
 		
-		$this->url = $this->_config->callback_url;
+		$this->url      = $this->_config->callback_url;
 		$this->username = $this->_config->username;
-		$this->token = $this->_config->token;
+		$this->token    = $this->_config->token;
 	}
 	
 	
-	public function sendMsg($chat_id,$content,$sender = 'admin'){
-		Yii::debug('chat id -> '.$chat_id,self::class);
+	public function sendMsg($chat_id,$content,$sender = null){
+		Yii::debug('chat id -> ' . $chat_id,self::class);
 		$response = $this->postRequest(self::ENDPOINT_ADD_MSG,[
 			'chat_id' => $chat_id,
 			'msg'     => $content,
-			'sender'  => $sender,
+			'sender'  => $sender ?? $this->_config->from_user,
 		]);
 		if($response && $data = json_decode($response,true)){
 			if(!$data['error']){
 				return $data['msg']['id'];
 			}
+			
 			return false;
 		}
 		
@@ -68,7 +70,7 @@ class LiveHelperChat extends BaseObject{
 			]);
 			$request = $client->createRequest();
 			$request->setMethod('POST')
-				->addHeaders(['Authorization' => 'Basic ' . base64_encode($this->username . ":". $this->token)])
+			        ->addHeaders(['Authorization' => 'Basic ' . base64_encode($this->username . ":" . $this->token)])
 			        ->setOptions([
 				        'timeout' => $timeout,
 			        ])
@@ -109,7 +111,7 @@ class LiveHelperChat extends BaseObject{
 			]);
 			$request = $client->createRequest();
 			$request->setMethod('GET')
-				->addHeaders(['Authorization' => 'Basic ' . base64_encode($this->username . ":". $this->token)])
+			        ->addHeaders(['Authorization' => 'Basic ' . base64_encode($this->username . ":" . $this->token)])
 			        ->setOptions([
 				        'timeout' => $timeout,
 			        ])

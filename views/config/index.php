@@ -161,7 +161,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
 			    <?= $form->field($lhc_config, 'verify_token')->textInput(['maxlength' => true]) ?>
 			    <?= $form->field($lhc_config, 'username')->textInput(['maxlength' => true]) ?>
 			    <?= $form->field($lhc_config, 'token')->textInput(['maxlength' => true]) ?>
-			    <?= $form->field($lhc_config, 'id_user')->textInput(['maxlength' => true]) ?>
+			    <?= $form->field($lhc_config, 'from_user')->textInput(['maxlength' => true]) ?>
 			    <?= $form->field($lhc_config, 'callback_url')->textInput(['maxlength' => true]) ?>
             </div>
             <div class="form-group">
