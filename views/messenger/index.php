@@ -147,11 +147,13 @@ $options = json_encode([
 		'facebook' => Conversation::TYPE_FACEBOOK,
 		'viber'    => Conversation::TYPE_VIBER,
 		'zalo'     => Conversation::TYPE_ZALO,
+		'lhc'      => Conversation::TYPE_LHC,
 	],
 	'logo'     => [
 		'facebook' => "$directoryAsset/images/facebook.jpg",
 		'viber'    => "$directoryAsset/images/viber.jpg",
 		'zalo'     => "$directoryAsset/images/zalo.jpg",
+		'lhc'      => "$directoryAsset/images/livechat.png",
 	],
 	'msgType'  => [
 		'text' => ConversationDetail::TYPE_TEXT,

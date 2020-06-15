@@ -195,19 +195,20 @@ class FacebookController extends Controller
         }
         
         /** @var Conversation $conversation */
-        $conversation = Conversation::findOne(['sender_id' => $sender_id, 'type' => Conversation::TYPE_FACEBOOK]);
+	    $conversation = Conversation::findOne(['sender_id' => $sender_id, 'type' => Conversation::TYPE_FACEBOOK]);
         if ($conversation == null) {
-            $conversation               = new Conversation();
+            $conversation               = new Conversation([
+            	'type' => Conversation::TYPE_FACEBOOK,
+	            'sender_id' => $sender_id
+            ]);
             $conversation->unread_count = 1;
         } else {
             $conversation->updateCounters(['unread_count' => 1]);
         }
         
-        $conversation->sender_id     = $sender_id;
         $conversation->sender_name   = $sender ? $sender->first_name . ' ' . $sender->last_name : '';
         $conversation->receiver_id   = $receiver_id;
         $conversation->receiver_name = $receiver ? $receiver->name : '';
-        $conversation->type          = Conversation::TYPE_FACEBOOK;
         
         if ($conversation->save()) {
             $msg                  = new ConversationDetail();

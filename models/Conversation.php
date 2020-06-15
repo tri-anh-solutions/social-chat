@@ -4,7 +4,6 @@ namespace tas\social\models;
 
 use app\models\CustomerInfo;
 use app\models\User;
-use app\modules\social\models\ConversationDetail;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -35,6 +34,7 @@ class Conversation extends ActiveRecord{
 	const TYPE_FACEBOOK = 1;
 	const TYPE_VIBER    = 2;
 	const TYPE_ZALO     = 3;
+	const TYPE_LHC      = 4;
 	
 	/**
 	 * @inheritdoc
@@ -49,8 +49,9 @@ class Conversation extends ActiveRecord{
 	public function rules(){
 		return [
 			[['type','message_count','unread_count','created_at','updated_at','locked_by'],'integer'],
-			[['sender_id','sender_name','receiver_id','receiver_name'],'string','max' => 255],
+			[['sender_name','receiver_id','receiver_name'],'string','max' => 255],
 			['unread_count','default','value' => 1],
+			['sender_id','safe'],
 		];
 	}
 	
@@ -73,13 +74,13 @@ class Conversation extends ActiveRecord{
 	}
 	
 	public function getDetails(){
-		return $this->hasMany(ConversationDetail::className(),['conversation_id' => 'conversation_id']);
+		return $this->hasMany(ConversationDetail::class,['conversation_id' => 'conversation_id']);
 	}
 	
 	public function behaviors(){
 		return [
 			[
-				'class'      => TimestampBehavior::className(),
+				'class'      => TimestampBehavior::class,
 				'attributes' => [
 					ActiveRecord::EVENT_BEFORE_INSERT => ['created_at'],
 				],
@@ -103,6 +104,9 @@ class Conversation extends ActiveRecord{
 				break;
 			case self::TYPE_ZALO:
 				return 'Z';
+				break;
+			case self::TYPE_LHC:
+				return 'L';
 				break;
 		}
 	}

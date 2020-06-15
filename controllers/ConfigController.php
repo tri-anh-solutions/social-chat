@@ -17,6 +17,7 @@ use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook;
 use tas\social\components\FacebookHelper;
 use tas\social\models\config\ConfigFacebook;
+use tas\social\models\config\ConfigLHC;
 use tas\social\models\config\ConfigZalo;
 use Yii;
 use yii\filters\AccessControl;
@@ -51,16 +52,21 @@ class ConfigController extends Controller{
 	public function actionIndex(){
 		$zaloConfig      = new ConfigZalo();
 		$facebook_config = new ConfigFacebook();
+		$lhc_config      = new ConfigLHC();
 		
 		if($zaloConfig->load(Yii::$app->request->post())
 		   && $zaloConfig->validate()
 		   && $facebook_config->load(Yii::$app->request->post())
 		   && $facebook_config->validate()
+		   && $lhc_config->load(Yii::$app->request->post())
+		   && $lhc_config->validate()
 		){
 			$zaloConfig->update();
 			$facebook_config->update();
+			$lhc_config->update();
 			Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
 		}
+		
 		$loginUrl = '';
 		if(!empty($facebook_config->app_id)){
 			$fb                 = new Facebook([
@@ -90,7 +96,9 @@ class ConfigController extends Controller{
 		return $this->render('index',[
 			'zalo_config'        => $zaloConfig,
 			'zalo_hook'          => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/zalo']),
+			'lhc_hook'           => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/live-chat']),
 			'facebook_config'    => $facebook_config,
+			'lhc_config'         => $lhc_config,
 			'facebook_hook'      => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/facebook']),
 			'facebook_login_url' => $loginUrl,
 			'fb_logged'          => $fb_logged,

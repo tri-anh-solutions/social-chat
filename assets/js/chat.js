@@ -24,7 +24,8 @@
             'chatType': {
                 'facebook': 1,
                 'viber': 2,
-                'zalo': 3
+                'zalo': 3,
+                'lhc': 4
             },
             'msgType': {
                 'text': 1,
@@ -34,7 +35,8 @@
             'logo': {
                 'facebook': '',
                 'viber': '',
-                'zalo': ''
+                'zalo': '',
+                'lhc': ''
             },
             'modal': '#modal',
             'debug': true,
@@ -87,7 +89,7 @@
             });
 
             $(userPanel).on('click', '.chat-left-lock', function () {
-                var data = {'conversation_id':  $(this).attr('data-id')};
+                var data = {'conversation_id': $(this).attr('data-id')};
                 var item = this;
                 $.ajax({url: settings.urls.lock, data: data, method: 'POST'})
                     .done(function (response) {
@@ -103,7 +105,7 @@
             });
 
             $(userPanel).on('click', '.chat-left-unlock', function () {
-                var data = {'conversation_id':  $(this).attr('data-id')};
+                var data = {'conversation_id': $(this).attr('data-id')};
                 var item = this;
                 $.ajax({url: settings.urls.unlock, data: data, method: 'POST'})
                     .done(function (response) {
@@ -340,6 +342,9 @@
                     case settings.chatType.facebook:
                         $('.chat-left-img img', html).attr('src', settings.logo.facebook);
                         break;
+                    case settings.chatType.lhc:
+                        $('.chat-left-img img', html).attr('src', settings.logo.lhc);
+                        break;
                 }
 
                 if (type == 'new') {
@@ -380,8 +385,8 @@
             var row = $('#msg_item_' + item.conversation_detail_id);
             if (row.length == 0) {
                 html = $(html).attr('id', 'msg_item_' + item.conversation_detail_id);
-                var class_name = ((SENDER_ID.valueOf() != item.sender_id.valueOf()) ? 'rightside-left-chat' : 'rightside-right-chat');
-                var display_name = ((SENDER_ID.valueOf() != item.sender_id.valueOf()) ? item.sender_name : SENDER_NAME);
+                var class_name = ((SENDER_ID != item.sender_id) ? 'rightside-left-chat' : 'rightside-right-chat');
+                var display_name = ((SENDER_ID != item.sender_id) ? item.sender_name : SENDER_NAME);
                 $(html).attr('data-id', item.conversation_detail_id);
                 $('>div', html).addClass(class_name);
                 $('.name', html).text(display_name);

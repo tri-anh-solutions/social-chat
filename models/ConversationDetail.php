@@ -51,8 +51,9 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 		return [
 			[['conversation_id','created_at','type','created_time'],'integer'],
 			[['content'],'string'],
-			[['msg_id','sender_id','sender_name'],'string','max' => 255],
+			[['msg_id','sender_name'],'string','max' => 255],
 			['user_id','default','value' => 0],
+			['sender_id','safe'],
 		];
 	}
 	

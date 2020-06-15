@@ -16,8 +16,10 @@ use yii\widgets\ActiveForm;
 
 /* @var $this \yii\web\View */
 /* @var $zalo_config ConfigZalo */
+/* @var $lhc_config \tas\social\models\config\ConfigLHC */
 /* @var $facebook_config \tas\social\models\config\ConfigFacebook */
 /* @var $zalo_hook string */
+/* @var $lhc_hook string */
 /* @var $facebook_hook string */
 /* @var $facebook_login_url string */
 /* @var $fb_logged bool */
@@ -34,7 +36,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
 <?php $form = ActiveForm::begin([
     'options'     => ['class' => 'form-horizontal'],
     'fieldConfig' => [
-        'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div><p class=\"help-block\">{hint}</p>",
+        'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div><p class=\"hint-block\">{hint}</p>",
         'labelOptions' => ['class' => 'col-lg-3 control-label'],
     ],
 ]); ?>
@@ -139,6 +141,32 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                         <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
                     </div>
                     <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><?= Yii::t('app', 'LHC Configuration') ?></h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3" for="email">Hook Link:</label>
+                    <div class="col-md-9">
+                        <p class="form-control-static">
+						    <?= $lhc_hook ?>
+                        </p>
+                    </div>
+                </div>
+			    <?= $form->field($lhc_config, 'verify_token')->textInput(['maxlength' => true]) ?>
+			    <?= $form->field($lhc_config, 'username')->textInput(['maxlength' => true]) ?>
+			    <?= $form->field($lhc_config, 'token')->textInput(['maxlength' => true]) ?>
+			    <?= $form->field($lhc_config, 'id_user')->textInput(['maxlength' => true]) ?>
+			    <?= $form->field($lhc_config, 'callback_url')->textInput(['maxlength' => true]) ?>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-3 col-lg-6 text-right">
+				    <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
                 </div>
             </div>
         </div>
