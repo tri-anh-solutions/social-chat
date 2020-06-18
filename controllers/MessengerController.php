@@ -33,7 +33,7 @@ class MessengerController extends Controller{
 	
 	public function actionGetConversation($page = 1){
 		Yii::$app->response->format = Response::FORMAT_JSON;
-		$per_page                   = - 1;
+		$per_page                   = 200;
 		
 		$query = Conversation::find()->orderBy(['updated_at' => SORT_DESC]);
 		
@@ -42,7 +42,7 @@ class MessengerController extends Controller{
 			'pagination' => [
 				// 'defaultPageSize' => ,
 				'pageSize'     => $per_page,
-				'page'         => $page - 1,
+				'page'         => 0,
 				'validatePage' => false,
 			],
 		]);
