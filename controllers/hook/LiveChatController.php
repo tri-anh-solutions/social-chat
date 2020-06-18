@@ -40,6 +40,7 @@ class LiveChatController extends Controller{
 	}
 	
 	public function actionIndex(){
+		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		$data                       = json_decode(Yii::$app->request->rawBody,true);
 		
@@ -99,6 +100,6 @@ class LiveChatController extends Controller{
 			Yii::error($conversation->getFirstErrors());
 		}
 		
-		return '';
+		exit();
 	}
 }
