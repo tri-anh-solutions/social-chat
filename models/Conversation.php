@@ -8,6 +8,7 @@ use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use function class_exists;
+use function implode;
 
 /**
  * This is the model class for table "conversations".
@@ -22,6 +23,9 @@ use function class_exists;
  * @property integer                  $unread_count
  * @property integer                  $created_at
  * @property integer                  $updated_at
+ * @property string                   $email
+ * @property string                   $phone
+ * @property int                      $last_msg_at
  *
  * @property ConversationDetail[]     $details
  * @property string                   $typeDisplay
@@ -48,10 +52,38 @@ class Conversation extends ActiveRecord{
 	 */
 	public function rules(){
 		return [
-			[['type','message_count','unread_count','created_at','updated_at','locked_by'],'integer'],
-			[['sender_name','receiver_id','receiver_name'],'string','max' => 255],
-			['unread_count','default','value' => 1],
-			['sender_id','safe'],
+			[
+				[
+					'type',
+					'message_count',
+					'unread_count',
+					'created_at',
+					'updated_at',
+					'locked_by',
+					'last_msg_at',
+				],
+				'integer',
+			],
+			[
+				[
+					'sender_name',
+					'receiver_id',
+					'receiver_name',
+					'phone',
+					'email',
+				],
+				'string',
+				'max' => 255,
+			],
+			[
+				'unread_count',
+				'default',
+				'value' => 1,
+			],
+			[
+				'sender_id',
+				'safe',
+			],
 		];
 	}
 	
@@ -124,12 +156,25 @@ class Conversation extends ActiveRecord{
 			'conversation_id',
 			'sender_id',
 			'locked_by',
-			'sender_name',
+			'sender_name'    => function(self $model){
+				if(empty($model->email) && empty($model->phone)){
+					return $model->sender_name;
+				}
+				$more = [];
+				if(!empty($model->phone)){
+					$more[] = $model->phone;
+				}
+				if(!empty($model->email)){
+					$more[] = $model->email;
+				}
+				
+				return $model->sender_name . '(' . implode(',',$more) . ')';
+			},
 			'type',
 			'message_count',
 			'unread_count',
 			'updated_at'     => function(self $model){
-				return Yii::$app->formatter->asDate($model->updated_at);
+				return Yii::$app->formatter->asDate($model->last_msg_at);
 			},
 			'created_at'     => function(self $model){
 				return Yii::$app->formatter->asDate($model->created_at);

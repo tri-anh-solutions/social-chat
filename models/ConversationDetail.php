@@ -6,6 +6,7 @@ use app\models\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use function time;
 
 /**
  * This is the model class for table "conversation_details".
@@ -107,7 +108,7 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 			'sender_name',
 			'content',
 			'type',
-			'created_at'  => function(self $model){
+			'created_at' => function(self $model){
 				return Yii::$app->formatter->asDatetime($model->created_time);
 			},
 			'href',
@@ -122,6 +123,22 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 	 * @return \app\models\User|\yii\db\ActiveQuery
 	 */
 	public function getUser(){
-		return $this->hasOne(User::className(),['id' => 'user_id']);
+		return $this->hasOne(User::class,['id' => 'user_id']);
+	}
+	
+	public function afterSave($insert,$changedAttributes){
+		parent::afterSave($insert,$changedAttributes);
+		Conversation::updateAllCounters([
+			'unread_count' => 1,
+		],[
+			'conversation_id' => $this->conversation_id,
+		]);
+		if($insert){
+			Conversation::updateAll([
+				'last_msg_at' => time(),
+			],[
+				'conversation_id' => $this->conversation_id,
+			]);
+		}
 	}
 }

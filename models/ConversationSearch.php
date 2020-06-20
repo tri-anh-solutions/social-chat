@@ -51,7 +51,7 @@ class ConversationSearch extends Conversation
         $dataProvider = new ActiveDataProvider([
             'query'      => $query,
             'pagination' => [
-                'pageSize' => 7,
+                'pageSize' => 100,
             ],
             'sort'       => [
                 'defaultOrder' => ['updated_at' => SORT_DESC],

@@ -43,8 +43,12 @@ class LiveChatController extends Controller{
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		$data                       = json_decode(Yii::$app->request->rawBody,true);
+		Yii::debug($data);
 		
 		$conversation = Conversation::findOne(['sender_id' => $data['chat_id'],'type' => Conversation::TYPE_LHC]);
+		if(!$conversation){
+			$conversation = Conversation::findOne(['email' => $data['email'],'phone' => $data['phone'],'type' => Conversation::TYPE_LHC]);
+		}
 		
 		$senderName = 'Unknown';
 		
@@ -56,22 +60,21 @@ class LiveChatController extends Controller{
 			$senderName = $data['email'];
 		}
 		
-		
 		if($conversation == null){
-			$conversation               = new Conversation([
-				'type'      => Conversation::TYPE_LHC,
-				'sender_id' => $data['chat_id'],
+			$conversation = new Conversation([
+				'type'         => Conversation::TYPE_LHC,
+				'sender_id'    => $data['chat_id'],
+				'unread_count' => 1,
 			]);
-			$conversation->unread_count = 1;
-		}else{
-			$conversation->updateCounters(['unread_count' => 1]);
 		}
 		$conversation->sender_name = $senderName;
+		$conversation->email       = $data['email'] ?? null;
+		$conversation->phone       = $data['phone'] ?? null;
 		
 		if($conversation->save()){
 			$msg = new ConversationDetail([
 				'conversation_id' => $conversation->conversation_id,
-				'sender_id'       => $data['chat_id'],
+				'sender_id'       => $conversation->sender_id,
 				'created_time'    => time(),
 				'user_id'         => - 1,
 				'content'         => $data['msg'],

@@ -10,6 +10,8 @@
 namespace tas\social\controllers;
 
 
+use app\models\CustomerDetails;
+use app\models\CustomerInfo;
 use app\models\search\CustomerInfoSearch;
 use tas\social\models\Conversation;
 use tas\social\models\ConversationDetail;
@@ -35,7 +37,7 @@ class MessengerController extends Controller{
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		$per_page                   = 200;
 		
-		$query = Conversation::find()->orderBy(['updated_at' => SORT_DESC]);
+		$query = Conversation::find()->orderBy(['last_msg_at' => SORT_DESC]);
 		
 		$provider = new ActiveDataProvider([
 			'query'      => $query,
@@ -161,9 +163,23 @@ class MessengerController extends Controller{
 		if(Yii::$app->request->isAjax){
 			$conversation_id = Yii::$app->request->post('conversation_id');
 			$id_customer     = Yii::$app->request->post('id_customer');
+			$customer        = CustomerInfo::findOne($id_customer);
+			$customerDetail  = CustomerDetails::findOne($id_customer);
 			$conversation    = Conversation::findOne($conversation_id);
-			if($conversation != null){
+			if($conversation){
 				$conversation->id_customer = $id_customer;
+				if($customerDetail && empty($customerDetail->Email) && !empty($conversation->email)){
+					$customerDetail->Email = $conversation->email;
+				}
+				if(!$customerDetail->save(false)){
+					Yii::error($customerDetail->getFirstErrors());
+				}
+				if($customer && empty($customer->DTDD) && !empty($conversation->phone)){
+					$customer->DTDD = $conversation->phone;
+				}
+				if(!$customer->save(false)){
+					Yii::error($customer->getFirstErrors());
+				}
 				if($conversation->save()){
 					$response['message'] = Yii::t('social','Successfully set customer.');
 					$response['result']  = true;
