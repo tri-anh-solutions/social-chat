@@ -47,7 +47,15 @@ class LiveChatController extends Controller{
 		
 		$conversation = Conversation::findOne(['sender_id' => $data['chat_id'],'type' => Conversation::TYPE_LHC]);
 		if(!$conversation){
-			$conversation = Conversation::findOne(['email' => $data['email'],'phone' => $data['phone'],'type' => Conversation::TYPE_LHC]);
+			$conversation = Conversation::find()->where([
+				'AND',
+				['type' => Conversation::TYPE_LHC],
+				[
+					'OR',
+					['email' => $data['email']],
+					['phone' => $data['phone']],
+				],
+			])->one();
 		}
 		
 		$senderName = 'Unknown';
