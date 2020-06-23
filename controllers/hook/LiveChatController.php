@@ -70,12 +70,12 @@ class LiveChatController extends Controller{
 		
 		if($conversation == null){
 			$conversation = new Conversation([
-				'type'         => Conversation::TYPE_LHC,
-				'sender_id'    => $data['chat_id'],
+				'type' => Conversation::TYPE_LHC,
 				'unread_count' => 1,
 			]);
 		}
 		$conversation->sender_name = $senderName;
+		$conversation->sender_id   = $data['chat_id'];
 		$conversation->email       = $data['email'] ?? null;
 		$conversation->phone       = $data['phone'] ?? null;
 		
