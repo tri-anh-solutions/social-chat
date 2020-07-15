@@ -368,10 +368,8 @@
 
             if (item.allow_transfer) {
                 $('.chat-left-detail .chat-left-transfer', html).show();
-                $('.chat-left-detail .chat-left-unlock', html).show();
             } else {
                 $('.chat-left-detail .chat-left-transfer', html).hide();
-                $('.chat-left-detail .chat-left-unlock', html).hide();
             }
 
             if (item.allow_unlock) {
