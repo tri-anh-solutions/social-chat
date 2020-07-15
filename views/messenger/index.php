@@ -85,8 +85,8 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                     <span class="badge chat-left-unread-count"></span>
                     <span class="chat-left-updated-at"></span>
                     <span class="chat-left-locked-by"></span>
-                    <span class="chat-left-lock"><i class="fa fa-lock"></i> </span>
-                    <span class="chat-left-unlock"><i class="fa fa-unlock-alt"></i> </span>
+                    <span class="chat-left-lock"><i class="fa fa-unlock-alt"></i> </span>
+                    <span class="chat-left-unlock"><i class="fa fa-lock"></i> </span>
                     <span class="chat-left-transfer"><i class="fa fa-exchange"></i> </span>
                 </div>
 				<?php if(class_exists('app\models\CustomerInfo')): ?>

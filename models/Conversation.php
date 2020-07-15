@@ -33,6 +33,8 @@ use function implode;
  * @property \app\models\CustomerInfo $customer
  * @property int                      $locked_by
  * @property \app\models\User         $lockedBy
+ * @property bool                     $allowUnlock
+ * @property bool                     $allowTransfer
  */
 class Conversation extends ActiveRecord{
 	const TYPE_FACEBOOK = 1;
@@ -187,7 +189,10 @@ class Conversation extends ActiveRecord{
 				return $model->lockedBy !== null ? $model->lockedBy->username : '';
 			},
 			'allow_transfer' => function(self $model){
-				return $model->locked_by && $model->locked_by == Yii::$app->user->id;
+				return $model->allowTransfer;
+			},
+			'allow_unlock'   => function(self $model){
+				return $model->allowUnlock;
 			},
 		];
 	}
@@ -197,5 +202,19 @@ class Conversation extends ActiveRecord{
 	 */
 	public function getLockedBy(){
 		return $this->hasOne(User::class,['id' => 'locked_by']);
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getAllowUnlock(){
+		return $this->locked_by == Yii::$app->user->id || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager');
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getAllowTransfer(){
+		return $this->locked_by == Yii::$app->user->id || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager');
 	}
 }
