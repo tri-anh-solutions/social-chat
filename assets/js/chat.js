@@ -372,14 +372,13 @@
                 $('.chat-left-detail .chat-left-transfer', html).hide();
             }
 
-            if (item.allow_unlock) {
-                $('.chat-left-detail .chat-left-unlock', html).show();
-            } else {
-                $('.chat-left-detail .chat-left-unlock', html).hide();
-            }
-
             if (item.locked_by) {
                 $('.chat-left-detail .chat-left-lock', html).hide();
+                if (item.allow_unlock) {
+                    $('.chat-left-detail .chat-left-unlock', html).show();
+                } else {
+                    $('.chat-left-detail .chat-left-unlock', html).hide();
+                }
             } else {
                 $('.chat-left-detail .chat-left-lock', html).show();
             }
