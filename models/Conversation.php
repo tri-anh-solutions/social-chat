@@ -13,28 +13,29 @@ use function implode;
 /**
  * This is the model class for table "conversations".
  *
- * @property integer                  $conversation_id
- * @property string                   $sender_id
- * @property string                   $sender_name
- * @property string                   $receiver_id
- * @property string                   $receiver_name
- * @property integer                  $type
- * @property integer                  $message_count
- * @property integer                  $unread_count
- * @property integer                  $created_at
- * @property integer                  $updated_at
- * @property string                   $email
- * @property string                   $phone
- * @property int                      $last_msg_at
+ * @property integer                        $conversation_id
+ * @property string                         $sender_id
+ * @property string                         $sender_name
+ * @property string                         $receiver_id
+ * @property string                         $receiver_name
+ * @property integer                        $type
+ * @property integer                        $message_count
+ * @property integer                        $unread_count
+ * @property integer                        $created_at
+ * @property integer                        $updated_at
+ * @property string                         $email
+ * @property string                         $phone
+ * @property int                            $last_msg_at
+ * @property int                            $id_customer
  *
- * @property ConversationDetail[]     $details
- * @property string                   $typeDisplay
- * @property int                      $id_customer
- * @property \app\models\CustomerInfo $customer
- * @property int                      $locked_by
- * @property \app\models\User         $lockedBy
- * @property bool                     $allowUnlock
- * @property bool                     $allowTransfer
+ * @property-read  ConversationDetail[]     $details
+ * @property-read  string                   $typeDisplay
+ * @property-read  \app\models\CustomerInfo $customer
+ * @property-read  int                      $locked_by
+ * @property-read  \app\models\User         $lockedBy
+ * @property-read  bool                     $allowUnlock
+ * @property-read  bool                     $allowTransfer
+ * @property-read  bool                     $allowLock
  */
 class Conversation extends ActiveRecord{
 	const TYPE_FACEBOOK = 1;
@@ -194,6 +195,9 @@ class Conversation extends ActiveRecord{
 			'allow_unlock'   => function(self $model){
 				return $model->allowUnlock;
 			},
+			'allow_lock'     => function(self $model){
+				return $model->allowLock;
+			},
 		];
 	}
 	
@@ -208,13 +212,21 @@ class Conversation extends ActiveRecord{
 	 * @return bool
 	 */
 	public function getAllowUnlock(){
-		return $this->locked_by == Yii::$app->user->id || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager');
+		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager')
+		       || Yii::$app->user->can('UnlockSocialChat');
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getAllowLock(){
+		return (empty($this->locked_by) || $this->locked_by <= 0) && !Yii::$app->user->isGuest;
 	}
 	
 	/**
 	 * @return bool
 	 */
 	public function getAllowTransfer(){
-		return $this->locked_by == Yii::$app->user->id || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager');
+		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager') || Yii::$app->user->can('TransferSocialChat');
 	}
 }

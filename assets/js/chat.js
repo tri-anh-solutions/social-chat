@@ -357,8 +357,8 @@
                 $('.chat-left-unread-count', html).text(item.unread_count);
             }
             $('.chat-left-set-customer-id', html).attr('data-id', item.conversation_id);
-            $('.chat-left-lock', html).attr('data-id', item.conversation_id);
-            $('.chat-left-unlock', html).attr('data-id', item.conversation_id);
+            $('.chat-left-lock', html).attr('data-id', item.conversation_id).hide();
+            $('.chat-left-unlock', html).attr('data-id', item.conversation_id).hide();
             $('.chat-left-transfer', html).attr('data-id', item.conversation_id);
             if (item.customer_name.length > 0) {
                 $('.chat-left-set-customer-id', html).hide();
@@ -372,15 +372,19 @@
                 $('.chat-left-detail .chat-left-transfer', html).hide();
             }
 
+
             if (item.locked_by) {
-                $('.chat-left-detail .chat-left-lock', html).hide();
                 if (item.allow_unlock) {
                     $('.chat-left-detail .chat-left-unlock', html).show();
                 } else {
                     $('.chat-left-detail .chat-left-unlock', html).hide();
                 }
             } else {
-                $('.chat-left-detail .chat-left-lock', html).show();
+                if (item.allow_lock) {
+                    $('.chat-left-detail .chat-left-lock', html).show();
+                } else {
+                    $('.chat-left-detail .chat-left-lock', html).hide();
+                }
             }
         }
 
