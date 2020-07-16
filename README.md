@@ -35,3 +35,10 @@ add config module
     ],
 ],
 ```
+
+
+Allow Transfer and Unlock Permission
+  -
+  * Add 2 permission : SocialUnlockChat,SocialTransferChat
+  * Assign Permission to user or role
+  * User Role Admin always allow 

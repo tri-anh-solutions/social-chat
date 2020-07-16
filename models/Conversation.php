@@ -212,8 +212,7 @@ class Conversation extends ActiveRecord{
 	 * @return bool
 	 */
 	public function getAllowUnlock(){
-		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager')
-		       || Yii::$app->user->can('UnlockSocialChat');
+		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('SocialUnlockChat');
 	}
 	
 	/**
@@ -227,6 +226,6 @@ class Conversation extends ActiveRecord{
 	 * @return bool
 	 */
 	public function getAllowTransfer(){
-		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('Manager') || Yii::$app->user->can('TransferSocialChat');
+		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('SocialTransferChat');
 	}
 }
