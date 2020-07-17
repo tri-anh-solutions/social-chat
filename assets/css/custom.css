@@ -173,6 +173,13 @@
     background-color: #007bff;
 }
 
+.right-header-contentChat .rightside-right-chat p.img {
+    text-align: right;
+}
+.right-header-contentChat p.img {
+    background-color: #fff;
+    border: 1px solid #007bff;
+}
 .right-chat-textbox {
     padding: 15px 30px;
     width: 100%;
@@ -259,7 +266,7 @@
 .rightside-right-chat .chat-item:before {
     content: " ";
     position: absolute;
-    top: 14px;
+    top: 11px;
     right: 15px;
     bottom: 150px;
     border: 15px solid transparent;

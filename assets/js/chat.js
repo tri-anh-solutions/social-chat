@@ -400,10 +400,10 @@
                 $('.name', html).text(display_name);
                 $('small', html).text(item.created_at);
                 $('.msg-checkbox-container .msg-checkbox', html).attr('data-id', item.conversation_detail_id)
-
-                switch (item.type) {
+                var t = parseInt(item.type);
+                switch (t) {
                     case settings.msgType.img:
-                        $('p', html).text(item.content);
+                        $('p', html).text(item.content).addClass('img');
                         var link = $('<a href="#" target="_blank" class="link"></a>');
                         var img = $('<img src="" />');
                         $(img).attr('src', item.thumb);
@@ -411,6 +411,7 @@
                         link.html(img);
                         $('p', html).append('<br/>');
                         $('p', html).append(link);
+                        debug(link);
                         break;
                     case  settings.msgType.link:
                         break;
@@ -418,7 +419,6 @@
                     default:
                         $('p', html).text(item.content);
                 }
-                // console.log(type);
                 if (type == 'new') {
                     $('.right-header-contentChat ul').append(html);
                     $('.right-header-contentChat').scrollTop($('.right-header-contentChat')[0].scrollHeight);
