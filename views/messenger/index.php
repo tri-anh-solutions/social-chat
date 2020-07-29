@@ -49,7 +49,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                                 </p>
                                 <div class="actions">
                                     <span class="action action-revoke" title="<?=Yii::t('social','Revoke')?>"><i class="fa fa-reply"></i> </span>
-                                    <!--<span class="action action-transfer" title="<?=Yii::t('social','Transfer')?>"><i class="fa fa-share"></i> </span>-->
+                                    <span class="action action-transfer" title="<?=Yii::t('social','Transfer')?>"><i class="fa fa-share"></i> </span>
                                     <span class="action action-lock" title="<?=Yii::t('social','Lock')?>"><i class="fa fa-unlock-alt"></i> </span>
                                     <span class="action action-unlock" title="<?=Yii::t('social','Unlock')?>"><i class="fa fa-lock"></i> </span>
                                 </div>
@@ -144,6 +144,7 @@ $options = json_encode([
 		'sendTicket'         => Url::to(['/feedback/create']),
 		'sendMsg'            => Url::to(['messenger/send-msg']),
 		'searchCustomer'     => Url::to(['messenger/search-customers']),
+		'searchUser'     => Url::to(['messenger/search-user']),
 		'setCustomer'        => Url::to(['messenger/set-customer']),
 		'lock'               => Url::to(['messenger/ajax-lock']),
 		'revoke'             => Url::to(['messenger/ajax-revoke']),

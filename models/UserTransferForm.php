@@ -31,11 +31,13 @@ class UserTransferForm extends Model{
 			$conversation = Conversation::findOne($this->id);
 			if($conversation){
 				$conversation->locked_by = $this->id_user;
-				
 				return $conversation->save();
 			}
 		}
 		
 		return false;
+	}
+	public function formName(){
+		return '';
 	}
 }

@@ -16,6 +16,8 @@ use app\models\search\CustomerInfoSearch;
 use tas\social\models\Conversation;
 use tas\social\models\ConversationDetail;
 use tas\social\models\ReplyMessage;
+use tas\social\models\UserSearch;
+use tas\social\models\UserTransferForm;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
@@ -274,12 +276,30 @@ class MessengerController extends Controller{
 	
 	public function actionUserTransfer(){
 		$response            = [];
+		$response['message'] = Yii::t('social','Failed to transfer.');
+		$response['result']  = false;
+		$form                = new UserTransferForm();
+		if(Yii::$app->request->isAjax && $form->load(Yii::$app->request->post()) && $form->save()){
+			$response['message'] = Yii::t('social','Transfer Successfully.');
+			$response['result']  = true;
+		}
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return $response;
+	}
+	
+	public function actionSearchUser(){
+		$response            = [];
 		$response['message'] = Yii::t('social','Failed to fetch data.');
 		$response['result']  = false;
 		if(Yii::$app->request->isAjax){
+			$searchModel  = new UserSearch();
+			$dataProvider = $searchModel->search(Yii::$app->request->get());
+			$dataProvider->setPagination(['pageSize' => 10]);
 			$response['message'] = Yii::t('social','Successfully fetched data.');
 			$response['result']  = true;
-			$response['view']    = $this->renderAjax('user-transfer');
+			$response['view']    = $this->renderAjax('user-transfer',['searchModel' => $searchModel,'dataProvider' => $dataProvider]);
 		}
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;

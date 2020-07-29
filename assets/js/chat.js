@@ -21,6 +21,7 @@
                 'transfer': '',
                 'revoke': '',
                 'searchCustomer': '',
+                'searchUser': '',
                 'setCustomer': ''
             },
             'chatType': {
@@ -56,8 +57,6 @@
         var contentPanel = $('.right-header-contentChat', chatApp);
         var msgPanel = $('.right-chat-textbox', chatApp);
 
-        var currentCustomer = null;
-
         function init() {
             $(userPanel).on('click', '.chat-left-set-customer-id', function () {
                 CURRENT_CHAT_ID = $(this).attr('data-id');
@@ -79,7 +78,7 @@
             $(actions).on('click', '.action-transfer', function () {
                 CURRENT_CHAT_ID = $(this).attr('data-id');
                 debug('CURRENT_CHAT_ID ==> ' + CURRENT_CHAT_ID);
-                $.ajax({url: settings.urls.transfer})
+                $.ajax({url: settings.urls.searchUser})
                     .done(function (response) {
                         if (response.result && response.result === true && response.view) {
                             $('#messenger-modal-content').html(response.view);
@@ -200,6 +199,27 @@
                 var cusId = $(this).attr('data-id');
                 var fullName = $(this).attr('data-full_name');
                 setCustomer(cusId, fullName);
+            });
+
+            $('#messenger-modal-content').on('beforeSubmit', '#social-user-search-form', function () {
+                var form = $(this);
+                $.ajax({url: settings.urls.searchUser, data: form.serialize()})
+                    .done(function (response) {
+                        if (response.result && response.result === true && response.view) {
+                            debug(response.view);
+                            $('#messenger-modal-content').html(response.view);
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function () {
+                    });
+                return false;
+            });
+
+            $('#messenger-modal-content').on('click', '.select-user', function () {
+                var idUser = $(this).attr('data-id');
+                transfer(idUser);
             });
 
             $('.left-chat').on('click', 'li:not(.active)', function () {
@@ -494,6 +514,21 @@
                             item.html(name);
                             $('#messenger-modal').modal('hide');
                         }
+                    } else {
+                        alert(response.message);
+                    }
+                })
+                .fail(function () {
+                });
+        }
+
+        function transfer(id_user) {
+            var data = {'id': CURRENT_CHAT_ID, 'id_user': id_user};
+            $.ajax({url: settings.urls.transfer, data: data, method: 'POST'})
+                .done(function (response) {
+                    if (response.result && response.result === true) {
+                        $('#messenger-modal').modal('hide');
+                        loadConversationAction();
                     } else {
                         alert(response.message);
                     }
