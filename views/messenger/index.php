@@ -44,7 +44,15 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                                 <img src="<?=$directoryAsset?>/images/businessman.png">
                             </div>
                             <div class="right-header-detail">
-                                <p></p>
+                                <p class="customer-name">
+
+                                </p>
+                                <div class="actions">
+                                    <span class="action action-revoke" title="<?=Yii::t('social','Revoke')?>"><i class="fa fa-reply"></i> </span>
+                                    <!--<span class="action action-transfer" title="<?=Yii::t('social','Transfer')?>"><i class="fa fa-share"></i> </span>-->
+                                    <span class="action action-lock" title="<?=Yii::t('social','Lock')?>"><i class="fa fa-unlock-alt"></i> </span>
+                                    <span class="action action-unlock" title="<?=Yii::t('social','Unlock')?>"><i class="fa fa-lock"></i> </span>
+                                </div>
                                 <div class="right-header-detail-control">
                                     <a href="javascript:void(0)" id="chat-send-ticket" class="hidden"><?=Yii::t('social','Send ticket')?></a>
                                     <a href="javascript:void(0)" id="chat-select"><?=Yii::t('social','Select')?></a>
@@ -85,9 +93,6 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                     <span class="badge chat-left-unread-count"></span>
                     <span class="chat-left-updated-at"></span>
                     <span class="chat-left-locked-by"></span>
-                    <span class="chat-left-lock"><i class="fa fa-unlock-alt"></i> </span>
-                    <span class="chat-left-unlock"><i class="fa fa-lock"></i> </span>
-                    <span class="chat-left-transfer"><i class="fa fa-exchange"></i> </span>
                 </div>
 				<?php if(class_exists('app\models\CustomerInfo')): ?>
                     <div class="chat-left-customer-info">
@@ -133,14 +138,17 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
 
 $options = json_encode([
 	'urls'     => [
-		'conversation'       => Url::to(['messenger/get-conversation']),
+		'conversations'      => Url::to(['messenger/get-conversation']),
+		'conversation'       => Url::to(['messenger/conversation']),
 		'conversationDetail' => Url::to(['messenger/get-conversation-detail']),
 		'sendTicket'         => Url::to(['/feedback/create']),
 		'sendMsg'            => Url::to(['messenger/send-msg']),
 		'searchCustomer'     => Url::to(['messenger/search-customers']),
 		'setCustomer'        => Url::to(['messenger/set-customer']),
 		'lock'               => Url::to(['messenger/ajax-lock']),
+		'revoke'             => Url::to(['messenger/ajax-revoke']),
 		'unlock'             => Url::to(['messenger/ajax-unlock']),
+		'transfer'           => Url::to(['messenger/user-transfer']),
 		'debug'              => YII_ENV_DEV,
 	],
 	'chatType' => [

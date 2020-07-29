@@ -58,6 +58,12 @@ class MessengerController extends Controller{
 		];
 	}
 	
+	public function actionConversation($id){
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return Conversation::findOne($id);
+	}
+	
 	public function actionGetConversationDetail($id,$page = 1){
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		$per_page                   = 10;
@@ -237,6 +243,27 @@ class MessengerController extends Controller{
 					$response['result']  = true;
 				}
 			}
+		}
+		
+		Yii::$app->response->format = Response::FORMAT_JSON;
+		
+		return $response;
+	}
+	
+	public function actionAjaxRevoke(){
+		$response            = [];
+		$response['message'] = Yii::t('social','Failed to revoke.');
+		$response['result']  = false;
+		if(Yii::$app->request->isAjax){
+			$conversation_id = Yii::$app->request->post('conversation_id');
+			$conversation    = Conversation::findOne($conversation_id);
+			if($conversation != null){
+				$conversation->locked_by = null;
+				if($conversation->save()){
+					$response['message'] = Yii::t('social','Revoked Successfully.');
+					$response['result']  = true;
+				}
+			}
 			
 		}
 		
@@ -250,12 +277,9 @@ class MessengerController extends Controller{
 		$response['message'] = Yii::t('social','Failed to fetch data.');
 		$response['result']  = false;
 		if(Yii::$app->request->isAjax){
-			$searchModel  = new CustomerInfoSearch();
-			$dataProvider = $searchModel->search(Yii::$app->request->get());
-			$dataProvider->setPagination(['pageSize' => 10]);
 			$response['message'] = Yii::t('social','Successfully fetched data.');
 			$response['result']  = true;
-			$response['view']    = $this->renderAjax('user-transfer',['searchModel' => $searchModel,'dataProvider' => $dataProvider]);
+			$response['view']    = $this->renderAjax('user-transfer');
 		}
 		
 		Yii::$app->response->format = Response::FORMAT_JSON;

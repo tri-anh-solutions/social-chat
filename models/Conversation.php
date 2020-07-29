@@ -27,15 +27,16 @@ use function implode;
  * @property string                         $phone
  * @property int                            $last_msg_at
  * @property int                            $id_customer
+ * @property  int                           $locked_by
  *
  * @property-read  ConversationDetail[]     $details
  * @property-read  string                   $typeDisplay
  * @property-read  \app\models\CustomerInfo $customer
- * @property-read  int                      $locked_by
  * @property-read  \app\models\User         $lockedBy
  * @property-read  bool                     $allowUnlock
  * @property-read  bool                     $allowTransfer
  * @property-read  bool                     $allowLock
+ * @property-read  bool                     $allowRevoke
  */
 class Conversation extends ActiveRecord{
 	const TYPE_FACEBOOK = 1;
@@ -198,6 +199,9 @@ class Conversation extends ActiveRecord{
 			'allow_lock'     => function(self $model){
 				return $model->allowLock;
 			},
+			'allow_revoke'     => function(self $model){
+				return $model->allowRevoke;
+			},
 		];
 	}
 	
@@ -212,7 +216,7 @@ class Conversation extends ActiveRecord{
 	 * @return bool
 	 */
 	public function getAllowUnlock(){
-		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('SocialUnlockChat');
+		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id);
 	}
 	
 	/**
@@ -227,5 +231,12 @@ class Conversation extends ActiveRecord{
 	 */
 	public function getAllowTransfer(){
 		return (!empty($this->locked_by) && $this->locked_by > 0 && $this->locked_by == Yii::$app->user->id) || Yii::$app->user->can('Admin') || Yii::$app->user->can('SocialTransferChat');
+	}
+	
+	/**
+	 * @return bool
+	 */
+	public function getAllowRevoke():bool{
+		return (!empty($this->locked_by) && $this->locked_by > 0  && $this->locked_by != Yii::$app->user->id && (Yii::$app->user->can('Admin') || Yii::$app->user->can('SocialRevokeChat')));
 	}
 }

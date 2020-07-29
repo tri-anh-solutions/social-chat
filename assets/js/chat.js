@@ -11,6 +11,7 @@
         var settings = $.extend({
             'chatId': '#chatApp',
             'urls': {
+                'conversations': '',
                 'conversation': '',
                 'conversationDetail': '',
                 'sendTicket': '',
@@ -18,6 +19,7 @@
                 'lock': '',
                 'unlock': '',
                 'transfer': '',
+                'revoke': '',
                 'searchCustomer': '',
                 'setCustomer': ''
             },
@@ -50,8 +52,11 @@
         var msg_template = $("#msg-template>li:first");
         var chatApp = $(settings.chatId);
         var userPanel = $('.left-chat', chatApp);
+        var actions = $('.right-header-detail .actions', chatApp);
         var contentPanel = $('.right-header-contentChat', chatApp);
         var msgPanel = $('.right-chat-textbox', chatApp);
+
+        var currentCustomer = null;
 
         function init() {
             $(userPanel).on('click', '.chat-left-set-customer-id', function () {
@@ -71,14 +76,14 @@
                     });
             });
 
-            $(userPanel).on('click', '.chat-left-transfer', function () {
+            $(actions).on('click', '.action-transfer', function () {
                 CURRENT_CHAT_ID = $(this).attr('data-id');
                 debug('CURRENT_CHAT_ID ==> ' + CURRENT_CHAT_ID);
                 $.ajax({url: settings.urls.transfer})
                     .done(function (response) {
                         if (response.result && response.result === true && response.view) {
                             $('#messenger-modal-content').html(response.view);
-                            $('#messenger-modal-title').html('Select customer');
+                            $('#messenger-modal-title').html('Select User');
                             $('#messenger-modal').modal('show');
                         } else {
                             alert(response.message);
@@ -88,7 +93,7 @@
                     });
             });
 
-            $(userPanel).on('click', '.chat-left-lock', function () {
+            $(actions).on('click', '.action-lock', function () {
                 var data = {'conversation_id': $(this).attr('data-id')};
                 var item = this;
                 $.ajax({url: settings.urls.lock, data: data, method: 'POST'})
@@ -96,6 +101,7 @@
                         if (response.result && response.result === true) {
                             alert(response.message);
                             $(item).hide();
+                            loadConversationAction();
                         } else {
                             alert(response.message);
                         }
@@ -104,7 +110,24 @@
                     });
             });
 
-            $(userPanel).on('click', '.chat-left-unlock', function () {
+            $(actions).on('click', '.action-revoke', function () {
+                var data = {'conversation_id': $(this).attr('data-id')};
+                var item = this;
+                $.ajax({url: settings.urls.revoke, data: data, method: 'POST'})
+                    .done(function (response) {
+                        if (response.result && response.result === true) {
+                            alert(response.message);
+                            $(item).hide();
+                            loadConversationAction();
+                        } else {
+                            alert(response.message);
+                        }
+                    })
+                    .fail(function () {
+                    });
+            });
+
+            $(actions).on('click', '.action-unlock', function () {
                 var data = {'conversation_id': $(this).attr('data-id')};
                 var item = this;
                 $.ajax({url: settings.urls.unlock, data: data, method: 'POST'})
@@ -112,6 +135,7 @@
                         if (response.result && response.result === true) {
                             alert(response.message);
                             $(item).hide();
+                            loadConversationAction();
                         } else {
                             alert(response.message);
                         }
@@ -230,7 +254,7 @@
                 $('.right-header-contentChat').removeClass('chat-selection');
                 $(".msg-checkbox:checkbox").prop('checked', false);
             });
-//init chat size
+            //init chat size
             var height = $(window).height() - 150;
             $('.left-chat').css('height', (height - 163) + 'px');
             $('.right-header-contentChat').css('height', (height - 163) + 'px');
@@ -255,12 +279,13 @@
             debug('SET CURRENT_USER_ID ==> ' + CURRENT_USER_ID);
             $('.right-header-contentChat ul li').remove();
             $('.right-header-detail p').text(SENDER_NAME);
+            loadConversationAction();
             loadChatMsgDetail();
         }
 
         function loadListUserChat() {
             $.ajax({
-                url: settings.urls.conversation,
+                url: settings.urls.conversations,
                 success: function (data) {
                     for (var i in data.data) {
                         renderUserItem(data.data[i], 'old');
@@ -306,6 +331,41 @@
             });
         }
 
+        function loadConversationAction() {
+            $.ajax({
+                url: settings.urls.conversation,
+                data: {'id': CURRENT_USER_ID},
+                success: function (item) {
+                    $('.action', actions).attr('data-id', item.conversation_id);
+                    if (item.allow_transfer) {
+                        $('.action-transfer', actions).show();
+                    } else {
+                        $('.action-transfer', actions).hide();
+                    }
+
+                    if (item.allow_revoke) {
+                        $('.action-revoke', actions).show();
+                    } else {
+                        $('.action-revoke', actions).hide();
+                    }
+
+                    if (item.allow_unlock) {
+                        $('.action-unlock', actions).show();
+                        msgPanel.show();
+                    } else {
+                        $('.action-unlock', actions).hide();
+                        msgPanel.hide();
+                    }
+
+                    if (item.allow_lock) {
+                        $('.action-lock', actions).show();
+                    } else {
+                        $('.action-lock', actions).hide();
+                    }
+                },
+                dataFormat: 'json'
+            });
+        }
 
         function renderUserItem(item, type) {
             var html = user_template.clone();
@@ -315,6 +375,7 @@
                 SENDER_ID = item.sender_id;
                 SENDER_NAME = item.sender_name;
                 $('.right-header-detail p').text(SENDER_NAME);
+                loadConversationAction();
                 loadChatMsgDetail();
             }
             if (row.length > 0) {
@@ -357,35 +418,12 @@
                 $('.chat-left-unread-count', html).text(item.unread_count);
             }
             $('.chat-left-set-customer-id', html).attr('data-id', item.conversation_id);
-            $('.chat-left-lock', html).attr('data-id', item.conversation_id).hide();
-            $('.chat-left-unlock', html).attr('data-id', item.conversation_id).hide();
-            $('.chat-left-transfer', html).attr('data-id', item.conversation_id);
+
             if (item.customer_name.length > 0) {
                 $('.chat-left-set-customer-id', html).hide();
             }
             $('.chat-left-detail .chat-left-customer-name', html).text(item.customer_name);
             $('.chat-left-detail .chat-left-locked-by', html).text(item.locked_name);
-
-            if (item.allow_transfer) {
-                $('.chat-left-detail .chat-left-transfer', html).show();
-            } else {
-                $('.chat-left-detail .chat-left-transfer', html).hide();
-            }
-
-
-            if (item.locked_by) {
-                if (item.allow_unlock) {
-                    $('.chat-left-detail .chat-left-unlock', html).show();
-                } else {
-                    $('.chat-left-detail .chat-left-unlock', html).hide();
-                }
-            } else {
-                if (item.allow_lock) {
-                    $('.chat-left-detail .chat-left-lock', html).show();
-                } else {
-                    $('.chat-left-detail .chat-left-lock', html).hide();
-                }
-            }
         }
 
         function renderMsgItem(item, type) {
@@ -411,7 +449,6 @@
                         link.html(img);
                         $('p', html).append('<br/>');
                         $('p', html).append(link);
-                        debug(link);
                         break;
                     case  settings.msgType.link:
                         break;

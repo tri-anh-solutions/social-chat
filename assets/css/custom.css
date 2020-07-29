@@ -387,3 +387,14 @@ a {
 .chat-left-customer-info{
     width: 208px;
 }
+
+.actions .action{
+    cursor: pointer;
+}
+
+.actions .action i{
+    font-size: 15px;
+}
+.actions .action i:hover{
+    color: #007bff;
+}
