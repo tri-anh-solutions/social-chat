@@ -92,13 +92,11 @@ class ZaloController extends Controller{
 			return '';
 		}
 		
-		/** @var \app\modules\social\models\Conversation $conversation */
+		/** @var Conversation $conversation */
 		$conversation = Conversation::findOne(['sender_id' => $fromuid,'type' => Conversation::TYPE_ZALO]);
 		if($conversation == null){
-			$conversation               = new Conversation();
-			$conversation->unread_count = 1;
-		}else{
-			$conversation->updateCounters(['unread_count' => 1]);
+			$conversation = new Conversation();
+			//$conversation->unread_count = 1;
 		}
 		
 		$conversation->sender_id     = $fromuid;
@@ -116,10 +114,10 @@ class ZaloController extends Controller{
 			$msg->created_time    = round($timestamp / 1000);
 			$msg->type            = ConversationDetail::TYPE_TEXT;
 			if(!$msg->save()){
-				Yii::trace($msg->errors);
+				Yii::error($msg->errors);
 			}
 		}else{
-			Yii::trace($conversation->errors);
+			Yii::error($conversation->errors);
 		}
 		
 		return 'OK';
@@ -143,10 +141,7 @@ class ZaloController extends Controller{
 		/** @var Conversation $conversation */
 		$conversation = Conversation::findOne(['sender_id' => $fromuid,'type' => Conversation::TYPE_ZALO]);
 		if($conversation == null){
-			$conversation               = new Conversation();
-			$conversation->unread_count = 1;
-		}else{
-			$conversation->updateCounters(['unread_count' => 1]);
+			$conversation = new Conversation();
 		}
 		
 		$conversation->sender_id     = $fromuid;
@@ -167,12 +162,12 @@ class ZaloController extends Controller{
 				$msg->created_time    = round($timestamp / 1000);
 				$msg->type            = ConversationDetail::TYPE_IMG;
 				if(!$msg->save()){
-					Yii::debug($msg->errors);
+					Yii::error($msg->errors);
 				}
 			}
 			
 		}else{
-			Yii::debug($conversation->errors);
+			Yii::error($conversation->errors);
 		}
 		
 		return '';
@@ -196,10 +191,7 @@ class ZaloController extends Controller{
 		/** @var Conversation $conversation */
 		$conversation = Conversation::findOne(['sender_id' => $fromuid,'type' => Conversation::TYPE_ZALO]);
 		if($conversation == null){
-			$conversation               = new Conversation();
-			$conversation->unread_count = 1;
-		}else{
-			$conversation->updateCounters(['unread_count' => 1]);
+			$conversation = new Conversation();
 		}
 		
 		$conversation->sender_id     = $fromuid;
@@ -221,12 +213,12 @@ class ZaloController extends Controller{
 				$msg->created_time    = round($timestamp / 1000);
 				$msg->type            = ConversationDetail::TYPE_IMG;
 				if(!$msg->save()){
-					Yii::debug($msg->errors);
+					Yii::error($msg->errors);
 				}
 			}
 			
 		}else{
-			Yii::debug($conversation->errors);
+			Yii::error($conversation->errors);
 		}
 		
 		return '';
@@ -249,9 +241,6 @@ class ZaloController extends Controller{
 		$conversation = Conversation::findOne(['sender_id' => $fromuid,'type' => Conversation::TYPE_ZALO]);
 		if($conversation == null){
 			$conversation               = new Conversation();
-			$conversation->unread_count = 1;
-		}else{
-			$conversation->updateCounters(['unread_count' => 1]);
 		}
 		
 		$conversation->sender_id     = $fromuid;
@@ -273,12 +262,11 @@ class ZaloController extends Controller{
 				$msg->created_time    = round($timestamp / 1000);
 				$msg->type            = ConversationDetail::TYPE_LINK;
 				if(!$msg->save()){
-					Yii::debug($msg->errors);
+					Yii::error($msg->errors);
 				}
 			}
-			
 		}else{
-			Yii::debug($conversation->errors);
+			Yii::error($conversation->errors);
 		}
 		
 		return '';
