@@ -108,7 +108,7 @@ class ZaloController extends Controller{
 		$conversation->type          = Conversation::TYPE_ZALO;
 		
 		if($conversation->save()){
-			$msg                  = new \app\modules\social\models\ConversationDetail();
+			$msg                  = new ConversationDetail();
 			$msg->conversation_id = $conversation->conversation_id;
 			$msg->sender_id       = $fromuid;
 			$msg->msg_id          = $msgid;
