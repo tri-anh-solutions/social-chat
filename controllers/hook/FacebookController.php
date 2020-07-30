@@ -66,7 +66,7 @@ class FacebookController extends Controller{
 				$data = Yii::$app->request->bodyParams;
 				foreach($data['entry'] as $entry){
 					Yii::debug($entry);
-					if(isset($entry[' '])){
+					if(isset($entry['messaging'])){
 						Yii::debug('messaging');
 						foreach($entry['messaging'] as $msg){
 							$this->handleMessage($msg);
@@ -105,14 +105,14 @@ class FacebookController extends Controller{
 		}
 		list($function,$value) = explode('=',$sign);
 		Yii::debug($raw,self::class);
-		Yii::debug($this->_facebook_config->app_secret,self::class);
+		Yii::debug('App Secret :' . $this->_facebook_config->app_secret,self::class);
 		$hash = hash_hmac($function,$raw,$this->_facebook_config->app_secret);
 		
 		if(!hash_equals($value,$hash)){
 			Yii::error('Invalid sign',self::class);
 			Yii::debug('SIGN: ' . $value,self::class);
 			Yii::debug('hash_hmac: ' . $hash,self::class);
-			Yii::$app->response->statusCode = 400;
+			Yii::$app->response->statusCode = 200;
 			
 			return false;
 		}

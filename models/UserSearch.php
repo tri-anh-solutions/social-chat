@@ -54,7 +54,7 @@ class UserSearch extends User{
 			['like','email',$this->keyword],
 			['like','full_name',$this->keyword],
 		]);
-				
+		
 		return $dataProvider;
 	}
 }
