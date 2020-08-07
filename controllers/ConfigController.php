@@ -19,6 +19,7 @@ use tas\social\components\FacebookHelper;
 use tas\social\models\config\ConfigFacebook;
 use tas\social\models\config\ConfigLHC;
 use tas\social\models\config\ConfigZalo;
+use tas\social\models\config\ModuleConfig;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
@@ -50,6 +51,7 @@ class ConfigController extends Controller{
 	 * @throws \Facebook\Exceptions\FacebookSDKException
 	 */
 	public function actionIndex(){
+		$moduleConfig    = new ModuleConfig();
 		$zaloConfig      = new ConfigZalo();
 		$facebook_config = new ConfigFacebook();
 		$lhc_config      = new ConfigLHC();
@@ -60,10 +62,13 @@ class ConfigController extends Controller{
 		   && $facebook_config->validate()
 		   && $lhc_config->load(Yii::$app->request->post())
 		   && $lhc_config->validate()
+		   && $moduleConfig->load(Yii::$app->request->post())
+		   && $moduleConfig->validate()
 		){
 			$zaloConfig->update();
 			$facebook_config->update();
 			$lhc_config->update();
+			$moduleConfig->update();
 			Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
 		}
 		
@@ -102,6 +107,7 @@ class ConfigController extends Controller{
 			'facebook_hook'      => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/facebook']),
 			'facebook_login_url' => $loginUrl,
 			'fb_logged'          => $fb_logged,
+			'moduleConfig'          => $moduleConfig,
 		]);
 	}
 	

@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model tas\social\models\AutoReply */
 
 $this->title                   = $model->title;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Auto Replies'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('social', 'Auto Replies'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="auto-reply-view">
@@ -15,11 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id_social_auto_reply], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id_social_auto_reply], [
+        <?= Html::a(Yii::t('social', 'Update'), ['update', 'id' => $model->id_social_auto_reply], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('social', 'Delete'), ['delete', 'id' => $model->id_social_auto_reply], [
             'class' => 'btn btn-danger',
             'data'  => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'confirm' => Yii::t('social', 'Are you sure you want to delete this item?'),
                 'method'  => 'post',
             ],
         ]) ?>

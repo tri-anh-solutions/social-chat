@@ -46,6 +46,9 @@
             'updateTime': {
                 'chat': 5000,
                 'user': 5000
+            },
+            'msgText':{
+
             }
         }, options);
 
@@ -290,7 +293,6 @@
             $('.left-chat li').removeClass('active');
             $(obj).find('.chat-left-unread-count').addClass('hidden');
             $(obj).addClass('active');
-            // $(this).hide().parent().prepend($(this).slideDown());
             debug(obj);
             CURRENT_USER_ID = $(obj).attr('data-id');
             SENDER_ID = $(obj).attr('data-sender-id');

@@ -42,12 +42,12 @@ class SocialConfig extends ActiveRecord{
 	 */
 	public function attributeLabels(){
 		return [
-			'id_social_config' => Yii::t('app','Id Social Config'),
-			'type'             => Yii::t('app','Type'),
-			'key'              => Yii::t('app','Key'),
-			'value'            => Yii::t('app','Value'),
-			'created_at'       => Yii::t('app','Created At'),
-			'updated_at'       => Yii::t('app','Updated At'),
+			'id_social_config' => Yii::t('social','Id'),
+			'type'             => Yii::t('social','Type'),
+			'key'              => Yii::t('social','Key'),
+			'value'            => Yii::t('social','Value'),
+			'created_at'       => Yii::t('social','Created At'),
+			'updated_at'       => Yii::t('social','Updated At'),
 		];
 	}
 	

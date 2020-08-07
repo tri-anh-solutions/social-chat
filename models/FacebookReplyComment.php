@@ -47,14 +47,14 @@ class FacebookReplyComment extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'facebook_reply_comment_id' => Yii::t('app', 'Facebook Reply Comment ID'),
-            'facebook_comment_id'       => Yii::t('app', 'Facebook Comment ID'),
-            'name'                      => Yii::t('app', 'Name'),
-            'id'                        => Yii::t('app', 'ID'),
-            'comment_id'                => Yii::t('app', 'Comment ID'),
-            'reply_comment_id'          => Yii::t('app', 'Reply Comment ID'),
-            'message'                   => Yii::t('app', 'Message'),
-            'created_time'              => Yii::t('app', 'Created Time'),
+            'facebook_reply_comment_id' => Yii::t('social', 'Facebook Reply Comment ID'),
+            'facebook_comment_id'       => Yii::t('social', 'Facebook Comment ID'),
+            'name'                      => Yii::t('social', 'Name'),
+            'id'                        => Yii::t('social', 'ID'),
+            'comment_id'                => Yii::t('social', 'Comment ID'),
+            'reply_comment_id'          => Yii::t('social', 'Reply Comment ID'),
+            'message'                   => Yii::t('social', 'Message'),
+            'created_time'              => Yii::t('social', 'Created Time'),
         ];
     }
 }

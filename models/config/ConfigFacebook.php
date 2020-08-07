@@ -16,7 +16,6 @@ class ConfigFacebook extends ConfigModel
     public $page_id;
     public $page_token;
     public $page_token_expire;
-    public $auto_reply = false;
     
     public $access_token = '';
     public $access_token_expires_at = 0;
@@ -34,7 +33,6 @@ class ConfigFacebook extends ConfigModel
         return [
             [['verify_token', 'page_token', 'app_id', 'app_secret', 'page_id'], 'filter', 'filter' => 'trim'],
             [['verify_token', 'app_id', 'app_secret'], 'required'],
-            ['auto_reply', 'boolean'],
         ];
     }
 }

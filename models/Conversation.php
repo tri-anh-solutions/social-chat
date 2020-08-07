@@ -96,16 +96,16 @@ class Conversation extends ActiveRecord{
 	 */
 	public function attributeLabels(){
 		return [
-			'conversation_id' => Yii::t('app','Conversation ID'),
-			'sender_id'       => Yii::t('app','Sender ID'),
-			'sender_name'     => Yii::t('app','Sender Name'),
-			'receiver_id'     => Yii::t('app','Receiver ID'),
-			'receiver_name'   => Yii::t('app','Receiver Name'),
-			'type'            => Yii::t('app','Type'),
-			'message_count'   => Yii::t('app','Message Count'),
-			'unread_count'    => Yii::t('app','Unread Count'),
-			'created_at'      => Yii::t('app','Created At'),
-			'updated_at'      => Yii::t('app','Updated At'),
+			'conversation_id' => Yii::t('social','Conversation ID'),
+			'sender_id'       => Yii::t('social','Sender ID'),
+			'sender_name'     => Yii::t('social','Sender Name'),
+			'receiver_id'     => Yii::t('social','Receiver ID'),
+			'receiver_name'   => Yii::t('social','Receiver Name'),
+			'type'            => Yii::t('social','Type'),
+			'message_count'   => Yii::t('social','Message Count'),
+			'unread_count'    => Yii::t('social','Unread Count'),
+			'created_at'      => Yii::t('social','Created At'),
+			'updated_at'      => Yii::t('social','Updated At'),
 		];
 	}
 	

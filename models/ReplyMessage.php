@@ -17,7 +17,6 @@ use tas\social\models\config\ConfigLHC;
 use tas\social\models\config\ConfigZalo;
 use Yii;
 use yii\base\Model;
-use yii\db\Expression;
 
 class ReplyMessage extends Model{
 	public $receiver_id;
@@ -60,10 +59,6 @@ class ReplyMessage extends Model{
 			if(!$msg->save()){
 				\Yii::debug($msg->errors);
 			}
-			
-			$conversation             = Conversation::findOne(['conversation_id' => $this->conversations_id]);
-			$conversation->updated_at = new Expression('NOW()');
-			$conversation->save();
 			
 			return $msg;
 		}
@@ -134,7 +129,7 @@ class ReplyMessage extends Model{
 			try{
 				Yii::debug('sender id => ' . $this->receiver_id);
 				
-				return (string) $lhc->sendMsg($this->receiver_id,$this->message);
+				return (string)$lhc->sendMsg($this->receiver_id,$this->message);
 			}
 			catch(FacebookSDKException $e){
 				Yii::error($e);

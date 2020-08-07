@@ -3,9 +3,13 @@
 namespace tas\social\models;
 
 use app\models\User;
+use Exception;
+use tas\social\models\config\ModuleConfig;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use function get_object_vars;
+use function str_replace;
 use function time;
 
 /**
@@ -63,14 +67,14 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 	 */
 	public function attributeLabels(){
 		return [
-			'conversation_detail_id' => Yii::t('app','Conversation Detail ID'),
-			'conversation_id'        => Yii::t('app','Conversation ID'),
-			'msg_id'                 => Yii::t('app','Msg ID'),
-			'sender_id'              => Yii::t('app','Sender ID'),
-			'content'                => Yii::t('app','Content'),
-			'type'                   => Yii::t('app','Type'),
-			'created_at'             => Yii::t('app','Created At'),
-			'created_time'           => Yii::t('app','Created Time'),
+			'conversation_detail_id' => Yii::t('social','Conversation Detail ID'),
+			'conversation_id'        => Yii::t('social','Conversation ID'),
+			'msg_id'                 => Yii::t('social','Msg ID'),
+			'sender_id'              => Yii::t('social','Sender ID'),
+			'content'                => Yii::t('social','Content'),
+			'type'                   => Yii::t('social','Type'),
+			'created_at'             => Yii::t('social','Created At'),
+			'created_time'           => Yii::t('social','Created Time'),
 		];
 	}
 	
@@ -86,7 +90,7 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 	}
 	
 	public function getConversation(){
-		return $this->hasOne(Conversation::className(),['conversation_id' => 'conversation_id']);
+		return $this->hasOne(Conversation::class,['conversation_id' => 'conversation_id']);
 	}
 	
 	public function behaviors(){
@@ -139,6 +143,40 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 			],[
 				'conversation_id' => $this->conversation_id,
 			]);
+			
+			$moduleConfig = new ModuleConfig();
+			
+			if($moduleConfig->auto_reply){
+				try{
+					$autoReply = AutoReply::findOne(['message' => $this->content]);
+					if($autoReply){
+						$msg = $autoReply->reply_content;
+						
+						$msg = str_replace(['{sender_name}','{receiver_name}'],
+							[$this->conversation->sender_name,$this->conversation->receiver_name],
+							$msg);
+						
+						$reply_form                   = new ReplyMessage([
+							'type' => $this->type,
+						]);
+						$reply_form->receiver_id      = $this->conversation->sender_id;
+						$reply_form->sender_id        = $this->conversation->receiver_id;
+						$reply_form->type             = $this->conversation->type;
+						$reply_form->conversations_id = $this->conversation->conversation_id;
+						$reply_form->message          = $msg;
+						
+						Yii::debug(get_object_vars($reply_form));
+						if($reply_form->validate() && $reply_form->sendMsg()){
+							Yii::info('send success');
+						}else{
+							Yii::error($reply_form->getFirstErrors(),'social');
+						}
+					}
+				}
+				catch(Exception $ex){
+					Yii::error($ex,'social');
+				}
+			}
 		}
 	}
 }

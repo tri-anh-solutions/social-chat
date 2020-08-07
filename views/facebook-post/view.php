@@ -48,7 +48,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@app/modules/social/
                 ],
             ])?>
             <h3 class="page-header">
-                <?=Yii::t('app','Comments')?>
+                <?=Yii::t('social','Comments')?>
             </h3>
             <div class="media comment">
                 <div class="media-left">

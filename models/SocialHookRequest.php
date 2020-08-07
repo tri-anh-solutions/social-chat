@@ -41,10 +41,10 @@ class SocialHookRequest extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id_social_hook_request' => Yii::t('app', 'Id Social Hook Request'),
-            'data'                   => Yii::t('app', 'Data'),
-            'status'                 => Yii::t('app', 'Status'),
-            'created_at'             => Yii::t('app', 'Created At'),
+            'id_social_hook_request' => Yii::t('social', 'Id Social Hook Request'),
+            'data'                   => Yii::t('social', 'Data'),
+            'status'                 => Yii::t('social', 'Status'),
+            'created_at'             => Yii::t('social', 'Created At'),
         ];
     }
     

@@ -137,12 +137,10 @@ class FacebookController extends Controller{
 		
 		Yii::debug($feed['item']);
 		if($feed['item'] == 'post' || $feed['item'] == 'status'){
-			
 			$post = FacebookPost::findOne(['post_id' => $feed['post_id']]);
 			if($post == null){
 				$post = new FacebookPost();
 			}
-			
 			$post->from_name    = $feed['from']['name'];
 			$post->from_id      = $feed['from']['id'];
 			$post->post_id      = $feed['post_id'];
@@ -244,32 +242,7 @@ class FacebookController extends Controller{
 			}
 			// $msg->content         = isset($received_message['message']['text']) ? $received_message['message']['text'] : '';
 			
-			if($msg->save()){
-				if($this->_facebook_config->auto_reply){
-					$autoReply = AutoReply::findOne(['message' => $msg->content]);
-					if($autoReply){
-						$msg = $autoReply->reply_content;
-						
-						$msg = str_replace(['{sender_name}','{receiver_name}'],
-							[$conversation->sender_name,$conversation->receiver_name],
-							$msg);
-						
-						$reply_form                   = new ReplyMessage();
-						$reply_form->receiver_id      = $conversation->sender_id;
-						$reply_form->sender_id        = $conversation->receiver_id;
-						$reply_form->type             = $conversation->type;
-						$reply_form->conversations_id = $conversation->conversation_id;
-						$reply_form->message          = $msg;
-						
-						Yii::debug(get_object_vars($reply_form));
-						if($reply_form->validate() && $reply_form->sendMsg()){
-							Yii::debug('send success');
-						}else{
-							Yii::error($reply_form->getFirstErrors(),'social');
-						}
-					}
-				}
-			}else{
+			if(!$msg->save()){
 				Yii::error($msg->errors);
 			}
 		}else{

@@ -23,122 +23,139 @@ use yii\widgets\ActiveForm;
 /* @var $facebook_hook string */
 /* @var $facebook_login_url string */
 /* @var $fb_logged bool */
+/* @var $moduleConfig \social\models\config\ModuleConfig */
 
 
-$this->title                   = Yii::t('app', 'Update Social Configuration');
-$this->params['breadcrumbs'][] = ['label' => 'Social Configurations', 'url' => ['config/index']];
+$this->title                   = Yii::t('social','Update Social Configuration');
+$this->params['breadcrumbs'][] = ['label' => 'Social Configurations','url' => ['config/index']];
 
 $fb_pages            = FacebookHelper::getPages();
-$pages               = array_combine(array_column($fb_pages, 'id'), array_column($fb_pages, 'name'));
+$pages               = array_combine(array_column($fb_pages,'id'),array_column($fb_pages,'name'));
 $login_callback_url  = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->controller->module->id . '/config/facebook-login']);
 $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->controller->module->id . '/config/facebook-logout']);
 ?>
 <?php $form = ActiveForm::begin([
-    'options'     => ['class' => 'form-horizontal'],
-    'fieldConfig' => [
-        'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div><p class=\"hint-block\">{hint}</p>",
-        'labelOptions' => ['class' => 'col-lg-3 control-label'],
-    ],
+	'options'     => ['class' => 'form-horizontal'],
+	'fieldConfig' => [
+		'template'     => "{label}\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-3\">{error}</div><p class=\"hint-block\">{hint}</p>",
+		'labelOptions' => ['class' => 'col-lg-3 control-label'],
+	],
 ]); ?>
     <div class="social-configuration-index">
 
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><?= Yii::t('app', 'Zalo Configuration') ?></h3>
+                <h3 class="panel-title"><?=Yii::t('social','Module Config')?></h3>
             </div>
             <div class="panel-body">
-                <div class="form-group">
-                    <label class="control-label col-md-3" for="email">Hook Link:</label>
-                    <div class="col-md-9">
-                        <p class="form-control-static">
-                            <?= $zalo_hook; ?>
-                        </p>
-                    </div>
-                </div>
-                <?= $form->field($zalo_config, 'oa_id')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($zalo_config, 'oa_secret')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($zalo_config, 'app_id')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($zalo_config, 'app_secret')->textInput(['maxlength' => true]) ?>
-                <?= $form->field($zalo_config, 'access_token')->textInput(['maxlength' => true])->hint(Html::a(Yii::t('app','Get Access Token'),'https://developers.zalo.me/tools/explorer',['target' => '_blank'])
-                ) ?>
+				<?=$form->field($moduleConfig,'auto_reply')->checkbox()?>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-6 text-right">
-                    <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+					<?=Html::submitButton('Update',['class' => 'btn btn-success'])?>
                 </div>
             </div>
         </div>
 
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><?= Yii::t('app', 'Facebook Configuration') ?></h3>
+                <h3 class="panel-title"><?=Yii::t('social','Zalo Configuration')?></h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Hook Link') ?>:</label>
+                    <label class="control-label col-md-3" for="email">Hook Link:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-                            <?= $facebook_hook; ?>
+							<?=$zalo_hook;?>
+                        </p>
+                    </div>
+                </div>
+				<?=$form->field($zalo_config,'oa_id')->textInput(['maxlength' => true])?>
+				<?=$form->field($zalo_config,'oa_secret')->textInput(['maxlength' => true])?>
+				<?=$form->field($zalo_config,'app_id')->textInput(['maxlength' => true])?>
+				<?=$form->field($zalo_config,'app_secret')->textInput(['maxlength' => true])?>
+				<?=$form->field($zalo_config,'access_token')
+				        ->textInput(['maxlength' => true])
+				        ->hint(Html::a(Yii::t('social','Get Access Token'),'https://developers.zalo.me/tools/explorer',['target' => '_blank'])
+				        )?>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-offset-3 col-lg-6 text-right">
+					<?=Html::submitButton('Update',['class' => 'btn btn-success'])?>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title"><?=Yii::t('social','Facebook Configuration')?></h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="control-label col-md-3" for="email"><?=Yii::t('social','Hook Link')?>:</label>
+                    <div class="col-md-9">
+                        <p class="form-control-static">
+							<?=$facebook_hook;?>
                         </p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Login callback URL') ?>:</label>
+                    <label class="control-label col-md-3" for="email"><?=Yii::t('social','Login callback URL')?>:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-                            <?= $login_callback_url; ?>
+							<?=$login_callback_url;?>
                         </p>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Logout callback URL') ?>:</label>
+                    <label class="control-label col-md-3" for="email"><?=Yii::t('social','Logout callback URL')?>:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-                            <?= $logout_callback_url; ?>
+							<?=$logout_callback_url;?>
                         </p>
                     </div>
                 </div>
-                <?= $form->field($facebook_config, 'verify_token')->textInput(['maxlength' => true]) ?>
-                <?php if (!empty($facebook_config->app_id) && !empty($facebook_config->app_secret)): ?>
-                    <?php if (!$fb_logged): ?>
+				<?=$form->field($facebook_config,'verify_token')->textInput(['maxlength' => true])?>
+				<?php if(!empty($facebook_config->app_id) && !empty($facebook_config->app_secret)): ?>
+					<?php if(!$fb_logged): ?>
                         <div class="form-group">
-                            <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Authorize') ?>:</label>
+                            <label class="control-label col-md-3" for="email"><?=Yii::t('social','Authorize')?>:</label>
                             <div class="col-md-9">
                                 <p class="form-control-static">
-                                    <?= $facebook_login_url; ?>
+									<?=$facebook_login_url;?>
                                 </p>
                             </div>
                         </div>
-                    <?php else: ?>
+					<?php else: ?>
                         <div class="form-group">
-                            <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Unauthorized') ?>:</label>
+                            <label class="control-label col-md-3" for="email"><?=Yii::t('social','Unauthorized')?>:</label>
                             <div class="col-md-9">
                                 <p class="form-control-static">
-                                    <?= Html::a('Unauthorized', ['config/facebook-logout']); ?>
+									<?=Html::a('Unauthorized',['config/facebook-logout']);?>
                                 </p>
                             </div>
                         </div>
-                        <?= $form->field($facebook_config, 'page_id')->dropDownList($pages, [
-                        'id'     => 'fb-page-id',
-                        'prompt' => Yii::t('social', 'Select page'),
-                    ]) ?>
+						<?=$form->field($facebook_config,'page_id')->dropDownList($pages,[
+						'id'     => 'fb-page-id',
+						'prompt' => Yii::t('social','Select page'),
+					])?>
                         <div class="form-group">
-                            <label class="control-label col-md-3" for="email"><?= Yii::t('social', 'Webhook') ?>:</label>
+                            <label class="control-label col-md-3" for="email"><?=Yii::t('social','Webhook')?>:</label>
                             <div class="col-md-9">
                                 <p class="form-control-static">
                                     <button id="subscribe-web-hook" class="btn btn-primary" type="button">Subscribe</button>
                                 </p>
                             </div>
                         </div>
-                        <?php //echo $form->field($facebook_config, 'page_token')->textInput(['id' => 'fb-page-token', 'maxlength' => true]) ?>
-                        <?= $form->field($facebook_config, 'auto_reply')->checkbox()->label(''); ?>
-                    <?php endif; ?>
-                <?php endif; ?>
-                <?= $form->field($facebook_config, 'app_id')->textInput(['id' => 'fb-app-id', 'maxlength' => true]) ?>
-                <?= $form->field($facebook_config, 'app_secret')->passwordInput(['maxlength' => true]) ?>
+						<?php //echo $form->field($facebook_config, 'page_token')->textInput(['id' => 'fb-page-token', 'maxlength' => true]) ?>
+						<?=$form->field($facebook_config,'auto_reply')->checkbox()->label('');?>
+					<?php endif; ?>
+				<?php endif; ?>
+				<?=$form->field($facebook_config,'app_id')->textInput(['id' => 'fb-app-id','maxlength' => true])?>
+				<?=$form->field($facebook_config,'app_secret')->passwordInput(['maxlength' => true])?>
                 <div class="form-group">
                     <div class="col-lg-offset-3 col-lg-6 text-right">
-                        <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+						<?=Html::submitButton('Update',['class' => 'btn btn-success'])?>
                     </div>
                     <div class="clearfix"></div>
                 </div>
@@ -147,26 +164,26 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
 
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title"><?= Yii::t('app', 'LHC Configuration') ?></h3>
+                <h3 class="panel-title"><?=Yii::t('social','LHC Configuration')?></h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">
                     <label class="control-label col-md-3" for="email">Hook Link:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-						    <?= $lhc_hook ?>
+							<?=$lhc_hook?>
                         </p>
                     </div>
                 </div>
-			    <?= $form->field($lhc_config, 'verify_token')->textInput(['maxlength' => true]) ?>
-			    <?= $form->field($lhc_config, 'username')->textInput(['maxlength' => true]) ?>
-			    <?= $form->field($lhc_config, 'token')->textInput(['maxlength' => true]) ?>
-			    <?= $form->field($lhc_config, 'from_user')->textInput(['maxlength' => true]) ?>
-			    <?= $form->field($lhc_config, 'callback_url')->textInput(['maxlength' => true]) ?>
+				<?=$form->field($lhc_config,'verify_token')->textInput(['maxlength' => true])?>
+				<?=$form->field($lhc_config,'username')->textInput(['maxlength' => true])?>
+				<?=$form->field($lhc_config,'token')->textInput(['maxlength' => true])?>
+				<?=$form->field($lhc_config,'from_user')->textInput(['maxlength' => true])?>
+				<?=$form->field($lhc_config,'callback_url')->textInput(['maxlength' => true])?>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-6 text-right">
-				    <?= Html::submitButton('Update', ['class' => 'btn btn-success']) ?>
+					<?=Html::submitButton('Update',['class' => 'btn btn-success'])?>
                 </div>
             </div>
         </div>

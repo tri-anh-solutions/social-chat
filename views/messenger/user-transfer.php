@@ -1,5 +1,5 @@
 <?php
-use app\models\CustomerInfo;
+
 use app\models\User;
 use kartik\form\ActiveForm;
 use kartik\grid\GridView;
@@ -15,16 +15,16 @@ use yii\helpers\Html;
 ]); ?>
 
 <div class="row">
-	<div class="col-md-12">
+    <div class="col-md-12">
 		<?php echo $form->field($searchModel,'keyword')->label(false)->textInput(['placeholder' => Yii::t('social','Keyword...')]) ?>
-	</div>
+    </div>
 </div>
 
 <div class="row">
-	<div class="col-md-12">
-		<?=Html::submitButton('Search',['class' => 'btn btn-info'])?>
-	
-	</div>
+    <div class="col-md-12">
+		<?=Html::submitButton(Yii::t('social','Search'),['class' => 'btn btn-info'])?>
+
+    </div>
 </div>
 <?php ActiveForm::end(); ?>
 <hr>
@@ -32,8 +32,8 @@ use yii\helpers\Html;
 try{
 	echo GridView::widget([
 		'pager'        => [
-			'firstPageLabel' => 'First',
-			'lastPageLabel'  => 'Last',
+			'firstPageLabel' => Yii::t('social','First'),
+			'lastPageLabel'  => Yii::t('social','Last'),
 			'maxButtonCount' => 7,
 		],
 		'dataProvider' => $dataProvider,
@@ -51,14 +51,16 @@ try{
 		'panel'        => [],
 		'columns'      => [
 			[
-				'attribute'      => 'id',
+				'attribute' => 'id',
 			],
 			[
-				'attribute'   => 'username',
-			],[
-				'attribute'   => 'full_name',
-			],[
-				'attribute'   => 'email',
+				'attribute' => 'username',
+			],
+			[
+				'attribute' => 'full_name',
+			],
+			[
+				'attribute' => 'email',
 			],
 			[
 				'class'    => 'kartik\grid\ActionColumn',
@@ -68,7 +70,7 @@ try{
 						return Html::a(Yii::t('social','Transfer'),'javascript:void(0)',[
 							'class' => 'select-user',
 							'data'  => [
-								'id'        => $model->id,
+								'id' => $model->id,
 							],
 						]);
 					},

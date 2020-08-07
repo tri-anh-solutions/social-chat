@@ -9,21 +9,20 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="auto-reply-form">
-    
-    <?php $form = ActiveForm::begin(); ?>
-    
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    
-    <?= $form->field($model, 'message')->textInput(['maxlength' => true]) ?>
-    
-    <?= $form->field($model, 'reply_content')->textarea(['rows' => 6])->hint('
+	
+	<?php $form = ActiveForm::begin(); ?>
+	
+	<?=$form->field($model,'title')->textInput(['maxlength' => true])?>
+	
+	<?=$form->field($model,'message')->textInput(['maxlength' => true])?>
+	
+	<?=$form->field($model,'reply_content')->textarea(['rows' => 6])->hint('
     {sender_name}: Sender name, {receiver_name}: Receiver name
-    ') ?>
-
+    ')?>
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+		<?=Html::submitButton(Yii::t('social','Save'),['class' => 'btn btn-success'])?>
     </div>
-    
-    <?php ActiveForm::end(); ?>
+	
+	<?php ActiveForm::end(); ?>
 
 </div>

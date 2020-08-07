@@ -27,7 +27,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
             <div class="row">
                 <div class="col-md-3 col-sm-3 col-xs-12 left-sidebar">
                     <div class="input-group searchbox">
-                        <input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
+                        <input class="form-control" placeholder="<?=Yii::t('social','Search')?>" name="srch-term" id="srch-term" type="text">
                         <div class="input-group-btn">
                             <button class="btn btn-default search-icon" type="submit"><i
                                         class="glyphicon glyphicon-search"></i></button>
@@ -99,7 +99,7 @@ $directoryAsset = Yii::$app->assetManager->getPublishedUrl('@tas/social/assets')
                         <span class="chat-left-customer-name">
                         </span>
                         <a href="javascript:void(0)" class="chat-left-set-customer-id" data-id="">
-							<?=Yii::t('app','Set customer')?>
+							<?=Yii::t('social','Set customer')?>
                         </a>
                     </div>
 				<?php endif; ?>
@@ -144,7 +144,7 @@ $options = json_encode([
 		'sendTicket'         => Url::to(['/feedback/create']),
 		'sendMsg'            => Url::to(['messenger/send-msg']),
 		'searchCustomer'     => Url::to(['messenger/search-customers']),
-		'searchUser'     => Url::to(['messenger/search-user']),
+		'searchUser'         => Url::to(['messenger/search-user']),
 		'setCustomer'        => Url::to(['messenger/set-customer']),
 		'lock'               => Url::to(['messenger/ajax-lock']),
 		'revoke'             => Url::to(['messenger/ajax-revoke']),
