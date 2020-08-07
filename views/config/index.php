@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
 /* @var $facebook_hook string */
 /* @var $facebook_login_url string */
 /* @var $fb_logged bool */
-/* @var $moduleConfig \social\models\config\ModuleConfig */
+/* @var $moduleConfig \tas\social\models\config\ModuleConfig */
 
 
 $this->title                   = Yii::t('social','Update Social Configuration');
@@ -48,7 +48,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                 <h3 class="panel-title"><?=Yii::t('social','Module Config')?></h3>
             </div>
             <div class="panel-body">
-				<?=$form->field($moduleConfig,'auto_reply')->checkbox()?>
+				<?=$form->field($moduleConfig,'auto_reply')->checkbox()->label('')?>
             </div>
             <div class="form-group">
                 <div class="col-lg-offset-3 col-lg-6 text-right">
@@ -66,7 +66,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                     <label class="control-label col-md-3" for="email">Hook Link:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-							<?=$zalo_hook;?>
+							<?=$zalo_hook?>
                         </p>
                     </div>
                 </div>
@@ -111,7 +111,7 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                     <label class="control-label col-md-3" for="email"><?=Yii::t('social','Logout callback URL')?>:</label>
                     <div class="col-md-9">
                         <p class="form-control-static">
-							<?=$logout_callback_url;?>
+							<?=$logout_callback_url?>
                         </p>
                     </div>
                 </div>
@@ -148,7 +148,6 @@ $logout_callback_url = Yii::$app->urlManager->createAbsoluteUrl([Yii::$app->cont
                             </div>
                         </div>
 						<?php //echo $form->field($facebook_config, 'page_token')->textInput(['id' => 'fb-page-token', 'maxlength' => true]) ?>
-						<?=$form->field($facebook_config,'auto_reply')->checkbox()->label('');?>
 					<?php endif; ?>
 				<?php endif; ?>
 				<?=$form->field($facebook_config,'app_id')->textInput(['id' => 'fb-app-id','maxlength' => true])?>
