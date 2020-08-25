@@ -15,6 +15,7 @@ class ConfigFacebook extends ConfigModel
     public $app_secret;
     public $page_id;
     public $page_token;
+    public $long_page_token;
     public $page_token_expire;
     
     public $access_token = '';
@@ -31,7 +32,7 @@ class ConfigFacebook extends ConfigModel
     public function rules()
     {
         return [
-            [['verify_token', 'page_token', 'app_id', 'app_secret', 'page_id'], 'filter', 'filter' => 'trim'],
+            [['verify_token', 'page_token', 'app_id', 'app_secret', 'page_id','long_page_token'], 'filter', 'filter' => 'trim'],
             [['verify_token', 'app_id', 'app_secret'], 'required'],
         ];
     }

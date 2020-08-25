@@ -180,21 +180,24 @@ class MessengerController extends Controller{
 				if(class_exists('app\models\CustomerDetails')){
 					$customerDetail = CustomerDetails::findOne($id_customer);
 					if($customerDetail && empty($customerDetail->Email) && !empty($conversation->email)){
-						$customerDetail->Email = $conversation->email;
-					}
-					
-					if(!$customerDetail->save(false)){
-						Yii::error($customerDetail->getFirstErrors());
+						//$customerDetail->Email = $conversation->email;
+						CustomerDetails::updateAll([
+							'Email' => $conversation->email,
+						],[
+							'CustID' => $id_customer,
+						]);
 					}
 				}
 				
 				if(class_exists('app\models\CustomerInfo')){
 					$customer = CustomerInfo::findOne($id_customer);
 					if($customer && empty($customer->DTDD) && !empty($conversation->phone)){
-						$customer->DTDD = $conversation->phone;
-					}
-					if(!$customer->save(false)){
-						Yii::error($customer->getFirstErrors());
+						//$customer->DTDD = $conversation->phone;
+						CustomerInfo::updateAll([
+							'DTDD' => $conversation->phone,
+						],[
+							'Pid' => $id_customer,
+						]);
 					}
 				}
 				if($conversation->save()){
