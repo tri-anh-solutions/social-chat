@@ -93,12 +93,14 @@ class ReplyMessage extends Model{
 			}
 			
 			try{
+				$tk = !empty($facebook_config->long_page_token) ? $facebook_config->long_page_token : $facebook_config->page_token;
 				/** @var \Facebook\FacebookResponse $response */
 				$response = $fb->post(
 					'/me/messages',
 					$data,
-					empty($facebook_config->long_page_token) ? $facebook_config->long_page_token : $facebook_config->page_token
+					$tk
 				);
+				Yii::debug($tk);
 				Yii::debug($response->getBody());
 				$data = json_decode($response->getBody());
 				if($data && isset($data->message_id)){
