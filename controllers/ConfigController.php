@@ -25,6 +25,7 @@ use yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\Response;
+use function json_decode;
 
 class ConfigController extends Controller{
 	/**
@@ -107,7 +108,7 @@ class ConfigController extends Controller{
 			'facebook_hook'      => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/facebook']),
 			'facebook_login_url' => $loginUrl,
 			'fb_logged'          => $fb_logged,
-			'moduleConfig'          => $moduleConfig,
+			'moduleConfig'       => $moduleConfig,
 		]);
 	}
 	
@@ -154,10 +155,29 @@ class ConfigController extends Controller{
 					$fb_access_token->getValue()
 				);
 				Yii::debug($response->getBody());
-				$data = json_decode($response->getBody());
+				$data = json_decode($response->getBody(),false);
 				Yii::$app->session->set('page_access_token',$data->access_token);
 				$facebook_config->page_token = $data->access_token;
 				$facebook_config->update();
+				
+				$response = $fb->get(
+					'/oauth/access_token?' . http_build_query([
+						'grant_type'        => 'fb_exchange_token',
+						'client_id'         => $facebook_config->app_id,
+						'client_secret'     => $facebook_config->app_secret,
+						'fb_exchange_token' => $facebook_config->page_token,
+					]),
+					$fb_access_token->getValue()
+				);
+				try{
+					$data = json_decode($response->getBody(),false);
+					Yii::$app->session->set('page_long_access_token',$data->access_token);
+					$facebook_config->long_page_token = $data->access_token;
+					$facebook_config->update();
+				}
+				catch(Exception $ex){
+					Yii::error($ex);
+				}
 				
 				return $data->access_token;
 			}

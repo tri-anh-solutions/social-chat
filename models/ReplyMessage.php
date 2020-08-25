@@ -97,7 +97,7 @@ class ReplyMessage extends Model{
 				$response = $fb->post(
 					'/me/messages',
 					$data,
-					$facebook_config->page_token
+					empty($facebook_config->long_page_token) ? $facebook_config->long_page_token : $facebook_config->page_token
 				);
 				Yii::debug($response->getBody());
 				$data = json_decode($response->getBody());
