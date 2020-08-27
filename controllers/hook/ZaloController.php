@@ -111,6 +111,7 @@ class ZaloController extends Controller{
 			$msg->sender_id       = $fromuid;
 			$msg->msg_id          = $msgid;
 			$msg->content         = $message;
+			$msg->user_id         = ConversationDetail::USER_HOOK;
 			$msg->created_time    = round($timestamp / 1000);
 			$msg->type            = ConversationDetail::TYPE_TEXT;
 			if(!$msg->save()){
@@ -240,7 +241,7 @@ class ZaloController extends Controller{
 		/** @var Conversation $conversation */
 		$conversation = Conversation::findOne(['sender_id' => $fromuid,'type' => Conversation::TYPE_ZALO]);
 		if($conversation == null){
-			$conversation               = new Conversation();
+			$conversation = new Conversation();
 		}
 		
 		$conversation->sender_id     = $fromuid;

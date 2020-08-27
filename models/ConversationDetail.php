@@ -40,7 +40,8 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 	const TYPE_IMG  = 2;
 	const TYPE_LINK = 3;
 	
-	const USER_BOT = - 1;
+	const USER_BOT = - 2;
+	const USER_HOOK = - 1;
 	
 	/**
 	 * @inheritdoc
@@ -146,12 +147,11 @@ class ConversationDetail extends \yii\db\ActiveRecord{
 			
 			$moduleConfig = new ModuleConfig();
 			
-			if($moduleConfig->auto_reply){
+			if($moduleConfig->auto_reply && ($this->user_id == self::USER_HOOK)){
 				try{
 					$autoReply = AutoReply::findOne(['message' => $this->content]);
 					if($autoReply){
 						$msg = $autoReply->reply_content;
-						
 						$msg = str_replace(['{sender_name}','{receiver_name}'],
 							[$this->conversation->sender_name,$this->conversation->receiver_name],
 							$msg);

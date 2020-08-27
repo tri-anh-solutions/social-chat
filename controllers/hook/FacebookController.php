@@ -224,7 +224,7 @@ class FacebookController extends Controller{
 			$msg->sender_id       = $received_message['sender']['id'];
 			$msg->msg_id          = $received_message['message']['mid'];
 			$msg->created_time    = $time_post;
-			$msg->user_id         = - 1;
+			$msg->user_id         = ConversationDetail::USER_HOOK;
 			
 			// TEXT
 			if(isset($received_message['message']['text'])){

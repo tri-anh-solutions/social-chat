@@ -70,7 +70,7 @@ class LiveChatController extends Controller{
 		
 		if($conversation == null){
 			$conversation = new Conversation([
-				'type' => Conversation::TYPE_LHC,
+				'type'         => Conversation::TYPE_LHC,
 				'unread_count' => 1,
 			]);
 		}
@@ -84,7 +84,7 @@ class LiveChatController extends Controller{
 				'conversation_id' => $conversation->conversation_id,
 				'sender_id'       => $conversation->sender_id,
 				'created_time'    => time(),
-				'user_id'         => - 1,
+				'user_id'         => ConversationDetail::USER_HOOK,
 				'content'         => $data['msg'],
 				'type'            => ConversationDetail::TYPE_TEXT,
 			]);
