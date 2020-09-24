@@ -18,6 +18,8 @@ use yii\base\Model;
  * @property string $type
  */
 abstract class ConfigModel extends Model{
+	public static $instance = null;
+	
 	/**
 	 * @return string
 	 */
@@ -90,6 +92,8 @@ abstract class ConfigModel extends Model{
 	
 	/**
 	 * Update click to call config
+	 *
+	 * @param bool $validate
 	 *
 	 * @return true|false
 	 */

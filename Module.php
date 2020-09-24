@@ -3,6 +3,7 @@
 namespace tas\social;
 
 use Yii;
+use yii\i18n\PhpMessageSource;
 
 /**
  * social module definition class
@@ -22,8 +23,8 @@ class Module extends \yii\base\Module
         parent::init();
         
         if (!isset(Yii::$app->i18n->translations['social'])) {
-            Yii::$app->i18n->translations['social'] = [
-	            'class'          => 'yii\i18n\PhpMessageSource',
+            Yii::$app->i18n->translations['social*'] = [
+	            'class'          => PhpMessageSource::class,
 	            'sourceLanguage' => 'en',
 	            'basePath'       => __DIR__ . '/messages',
             ];

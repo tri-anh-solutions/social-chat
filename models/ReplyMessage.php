@@ -15,8 +15,11 @@ use tas\social\components\LiveHelperChat;
 use tas\social\models\config\ConfigFacebook;
 use tas\social\models\config\ConfigLHC;
 use tas\social\models\config\ConfigZalo;
+use tas\social\models\config\ViberConfig;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\httpclient\Client;
 
 class ReplyMessage extends Model{
 	public $receiver_id;
@@ -48,14 +51,15 @@ class ReplyMessage extends Model{
 				$msg_id = $this->sendLHC();
 				break;
 		}
+		Yii::debug($msg_id);
 		if($msg_id){
 			$msg                  = new ConversationDetail();
 			$msg->conversation_id = $this->conversations_id;
-			$msg->msg_id          = $msg_id;
+			$msg->msg_id          = (string) $msg_id;
 			$msg->content         = $this->message;
 			$msg->created_time    = (string)time();
 			$msg->sender_id       = $this->sender_id;
-			$msg->user_id         = Yii::$app->user ? Yii::$app->user->id : 0;
+			$msg->user_id         = Yii::$app->user->id ?? 0;
 			if(!$msg->save()){
 				\Yii::debug($msg->errors);
 			}
@@ -180,34 +184,42 @@ class ReplyMessage extends Model{
 	}
 	
 	private function sendViver($receiver,$msg,$type = 'text'){
-		
-		$data = [
+		$config = new ViberConfig();
+		$data   = [
 			'receiver'        => $receiver,
 			'min_api_version' => 1,
 			'sender'          => [
-				'name'   => \Yii::$app->params['viber']['name'],
-				'avatar' => \Yii::$app->params['viber']['avatar'],
+				'name'   => $config->name,
+				'avatar' => $config->avatar,
 			],
 			'type'            => $type,
 			'text'            => $msg,
 		];
-		
-		$json_data = json_encode($data);
-		$ch        = curl_init("https://chatapi.viber.com/pa/send_message");
-		curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"POST");
-		curl_setopt($ch,CURLOPT_POSTFIELDS,$json_data);
-		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,0);
-		curl_setopt($ch,CURLOPT_HTTPHEADER,[
-				'Content-Type: application/json',
-				'Content-Length: ' . strlen($json_data),
-				'X-Viber-Auth-Token :' . \Yii::$app->params['viber']['token'],
-			]
-		);
-		$response = curl_exec($ch);
-		$response = json_decode($response);
-		
-		return (string)$response->message_token;
+		$client = new Client([
+			'baseUrl' => 'https://chatapi.viber.com/pa/send_message',
+		]);
+		try{
+			$request = $client->createRequest()
+			                  ->setFormat(Client::FORMAT_JSON)
+			                  ->setData($data)
+			                  ->setHeaders([
+				                  'X-Viber-Auth-Token :' . $config->token,
+			                  ]);
+			
+			/** @var \yii\httpclient\Response $response */
+			$response = $request->send();
+			if($response->isOk){
+				Yii::debug($response->content);
+				$response_data = json_decode($response->content,true);
+				
+				return $response_data['message_token'] ?? null;
+			}
+			
+			return null;
+		}
+		catch(InvalidConfigException $e){
+			Yii::error($e);
+			return null;
+		}
 	}
 }

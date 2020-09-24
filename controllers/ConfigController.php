@@ -20,6 +20,8 @@ use tas\social\models\config\ConfigFacebook;
 use tas\social\models\config\ConfigLHC;
 use tas\social\models\config\ConfigZalo;
 use tas\social\models\config\ModuleConfig;
+use tas\social\models\forms\ViberConfigForm;
+use tas\social\models\forms\ViberRegisterWebHookForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
@@ -51,33 +53,34 @@ class ConfigController extends Controller{
 	 * @return string
 	 * @throws \Facebook\Exceptions\FacebookSDKException
 	 */
-	public function actionIndex(){
-		$moduleConfig    = new ModuleConfig();
-		$zaloConfig      = new ConfigZalo();
-		$facebook_config = new ConfigFacebook();
-		$lhc_config      = new ConfigLHC();
+	public function actionIndex($active = 'base'){
+		$moduleConfig   = new ModuleConfig();
+		$zaloConfig     = new ConfigZalo();
+		$facebookConfig = new ConfigFacebook();
+		$lhcConfig      = new ConfigLHC();
+		$viberConfig    = new ViberConfigForm();
 		
-		if($zaloConfig->load(Yii::$app->request->post())
-		   && $zaloConfig->validate()
-		   && $facebook_config->load(Yii::$app->request->post())
-		   && $facebook_config->validate()
-		   && $lhc_config->load(Yii::$app->request->post())
-		   && $lhc_config->validate()
-		   && $moduleConfig->load(Yii::$app->request->post())
-		   && $moduleConfig->validate()
-		){
-			$zaloConfig->update();
-			$facebook_config->update();
-			$lhc_config->update();
-			$moduleConfig->update();
-			Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
-		}
+		//if($zaloConfig->load(Yii::$app->request->post())
+		//   && $zaloConfig->validate()
+		//   && $facebookConfig->load(Yii::$app->request->post())
+		//   && $facebookConfig->validate()
+		//   && $lhcConfig->load(Yii::$app->request->post())
+		//   && $lhcConfig->validate()
+		//   && $moduleConfig->load(Yii::$app->request->post())
+		//   && $moduleConfig->validate()
+		//){
+		//	$zaloConfig->update();
+		//	$facebookConfig->update();
+		//	$lhcConfig->update();
+		//	$moduleConfig->update();
+		//	Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
+		//}
 		
 		$loginUrl = '';
-		if(!empty($facebook_config->app_id)){
+		if(!empty($facebookConfig->app_id)){
 			$fb                 = new Facebook([
-				'app_id'     => $facebook_config->app_id,
-				'app_secret' => $facebook_config->app_secret,
+				'app_id'     => $facebookConfig->app_id,
+				'app_secret' => $facebookConfig->app_secret,
 			]);
 			$helper             = $fb->getRedirectLoginHelper();
 			$permissions        = ['manage_pages','pages_messaging']; // optional
@@ -87,11 +90,11 @@ class ConfigController extends Controller{
 		
 		$fb_logged = false;
 		/** @var \Facebook\Authentication\AccessToken $fb_access_token */
-		if(!empty($facebook_config->access_token)){
+		if(!empty($facebookConfig->access_token)){
 			if(!FacebookHelper::checkTokenValid()){
 				// Yii::$app->session->remove('facebook_access_token');
-				$facebook_config->access_token            = '';
-				$facebook_config->access_token_expires_at = 0;
+				$facebookConfig->access_token            = '';
+				$facebookConfig->access_token_expires_at = 0;
 				
 				$fb_logged = false;
 			}else{
@@ -103,13 +106,55 @@ class ConfigController extends Controller{
 			'zalo_config'        => $zaloConfig,
 			'zalo_hook'          => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/zalo']),
 			'lhc_hook'           => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/live-chat']),
-			'facebook_config'    => $facebook_config,
-			'lhc_config'         => $lhc_config,
+			'viber_hook'         => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/viber']),
+			'facebook_config'    => $facebookConfig,
 			'facebook_hook'      => Yii::$app->urlManager->createAbsoluteUrl([$this->module->id . '/hook/facebook']),
 			'facebook_login_url' => $loginUrl,
 			'fb_logged'          => $fb_logged,
 			'moduleConfig'       => $moduleConfig,
+			'lhc_config'         => $lhcConfig,
+			'viber_config'       => $viberConfig,
+			'active'             => $active,
 		]);
+	}
+	
+	public function actionUpdateConfig($active = 'base'){
+		$moduleConfig   = new ModuleConfig();
+		$zaloConfig     = new ConfigZalo();
+		$facebookConfig = new ConfigFacebook();
+		$lhcConfig      = new ConfigLHC();
+		$viberConfig    = new ViberConfigForm();
+		
+		if($zaloConfig->load(Yii::$app->request->post()) && $zaloConfig->validate()){
+			$zaloConfig->update();
+		}
+		
+		if($facebookConfig->load(Yii::$app->request->post()) && $facebookConfig->validate()){
+			$facebookConfig->update();
+		}
+		
+		if($lhcConfig->load(Yii::$app->request->post()) && $lhcConfig->validate()){
+			$lhcConfig->update();
+		}
+		
+		if($moduleConfig->load(Yii::$app->request->post()) && $moduleConfig->validate()){
+			$moduleConfig->update();
+		}
+		if($viberConfig->load(Yii::$app->request->post()) && $viberConfig->validate()){
+			$viberConfig->update();
+		}
+		
+		Yii::$app->session->addFlash('success',Yii::t('social','Update config success'));
+		
+		return $this->redirect(['config/index','active' => $active]);
+	}
+	
+	public function actionViberRegisterHook(){
+		$registerWebHookModel = new ViberRegisterWebHookForm();
+		$registerWebHookModel->load(Yii::$app->request->post());
+		$registerWebHookModel->save();
+		
+		return $this->redirect(['config/index','active' => 'viber']);
 	}
 	
 	public function actionGetPages(){

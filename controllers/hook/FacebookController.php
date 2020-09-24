@@ -100,7 +100,7 @@ class FacebookController extends Controller{
 		Yii::debug($sign);
 		if(empty($sign)){
 			Yii::$app->response->statusCode = 400;
-			
+			Yii::error('empty sign');
 			return false;
 		}
 		list($function,$value) = explode('=',$sign);
@@ -170,7 +170,12 @@ class FacebookController extends Controller{
 		//$response;
 		Yii::debug($received_message['timestamp']);
 		
-		$time_post = new \DateTime('now',new \DateTimeZone('UTC'));
+		try{
+			$time_post = new \DateTime('now',new \DateTimeZone('UTC'));
+		}
+		catch(Exception $e){
+			Yii::error($e,'social');
+		}
 		$time_post->setTimestamp($received_message['timestamp'] / 1000);
 		
 		// change the timezone of the object without changing it's time

@@ -12,6 +12,7 @@ namespace tas\social;
 
 use yii\web\AssetBundle;
 use const YII_DEBUG;
+use app\assets\AppAsset;
 
 class SocialAsset extends AssetBundle{
 	/**
@@ -34,6 +35,6 @@ class SocialAsset extends AssetBundle{
 		YII_DEBUG ? 'js/chat.js' : 'js/chat.min.js',
 	];
 	public $depends = [
-		'app\assets\AppAsset',
+		AppAsset::class,
 	];
 }
