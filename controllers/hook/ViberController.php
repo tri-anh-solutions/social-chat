@@ -64,8 +64,9 @@ class ViberController extends Controller{
 						$msg->sender_id       = $sender_id;
 						$msg->msg_id          = (string)$data['message_token'];
 						$msg->content         = $data['message']['text'];
-						$msg->created_time    = (int)$data['timestamp'] / 1000;
+						$msg->created_time    = (int)($data['timestamp'] / 1000);
 						$msg->type            = ConversationDetail::TYPE_TEXT;
+						$msg->user_id         = ConversationDetail::USER_HOOK;
 						if(!$msg->save()){
 							Yii::debug($msg->errors);
 						}

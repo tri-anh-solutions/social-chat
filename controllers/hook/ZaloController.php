@@ -114,6 +114,7 @@ class ZaloController extends Controller{
 			$msg->user_id         = ConversationDetail::USER_HOOK;
 			$msg->created_time    = round($timestamp / 1000);
 			$msg->type            = ConversationDetail::TYPE_TEXT;
+			$msg->user_id         = ConversationDetail::USER_HOOK;
 			if(!$msg->save()){
 				Yii::error($msg->errors);
 			}
