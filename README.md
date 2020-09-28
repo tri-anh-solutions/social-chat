@@ -32,6 +32,7 @@ add config module
 'modules'      => [
     'social' => [
         'class' => 'tas\social\Module',
+        'createTicketUrl' => '/feedback/create?id_customer={{id_customer}}&id_source={{source}}&conversation_detail_ids={{msg_ids}}',
     ],
 ],
 ```
@@ -42,3 +43,10 @@ Allow Transfer and Unlock Permission
   * Add 2 permission : SocialUnlockChat,SocialTransferChat,SocialRevokeChat
   * Assign Permission to user or role
   * User Role Admin always allow 
+  
+  
+Params: 
+  - 
+   * {{id_customer}} :  customer id
+   * {{source}} : number 1: FACEBOOK, 2 : VIBER, 3: Zalo, 4: Live Helper Chat
+   * {{msg_ids}}: selected messages,  format : 1,2,3 

@@ -47,9 +47,7 @@
                 'chat': 5000,
                 'user': 5000
             },
-            'msgText':{
-
-            }
+            'msgText': {}
         }, options);
 
         var user_template = $("#user-template>li:first");
@@ -158,8 +156,8 @@
                         }
                     }
                     if (data.length > 0) {
-                        var params = encodeURIComponent(JSON.stringify(data));
-                        var url = settings.urls.sendTicket + '?conversation_detail_ids=' + params;
+                        var params = data.join();
+                        var url = settings.urls.sendTicket + '?id=' + CURRENT_USER_ID + '&ids=' + params;
                         var win = window.open(url, '_blank');
                         win.focus();
                     }
@@ -403,7 +401,7 @@
             if (row.length > 0) {
                 html = row;
                 $('.chat-left-detail .chat-left-updated-at', html).text(item.updated_at);
-                $('.chat-left-detail .chat-left-customer-id', html).text(item.customer_name);
+                $('.chat-left-detail .chat-left-updated-at', html).text(item.updated_at);
             } else {
                 html = $(html).attr('id', 'chat_item_' + item.conversation_id);
                 if (item.conversation_id == CURRENT_USER_ID) {

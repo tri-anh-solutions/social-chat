@@ -21,8 +21,10 @@ use tas\social\models\UserTransferForm;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use function class_exists;
+use function str_replace;
 
 /** @noinspection LongInheritanceChainInspection */
 
@@ -64,6 +66,28 @@ class MessengerController extends Controller{
 		Yii::$app->response->format = Response::FORMAT_JSON;
 		
 		return Conversation::findOne($id);
+	}
+	
+	/**
+	 * @param $id
+	 * @param $ids
+	 *
+	 * @return \yii\web\Response
+	 * @throws \yii\web\NotFoundHttpException
+	 */
+	public function actionSendTicket($id,$ids){
+		$conversation = Conversation::findOne($id);
+		if(!$conversation){
+			throw  new NotFoundHttpException();
+		}
+		$customerId = $conversation->id_customer;
+		$source     = $conversation->type;
+		
+		$url = $this->module->createTicketUrl;
+		$url = str_replace(['{{id_customer}}','{{msg_ids}}','{{source}}'],[$customerId,$ids,$source],$url);
+		
+		return $this->redirect([$url]);
+		
 	}
 	
 	public function actionGetConversationDetail($id,$page = 1){

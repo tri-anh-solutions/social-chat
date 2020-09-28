@@ -14,6 +14,7 @@ class Module extends \yii\base\Module
      * {@inheritdoc}
      */
     public $controllerNamespace = 'tas\social\controllers';
+    public $createTicketUrl = '/feedback/create?id_customer={{id_customer}}&id_source={{source}}&conversation_detail_ids={{msg_ids}}';
     
     /**
      * {@inheritdoc}
