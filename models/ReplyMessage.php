@@ -9,6 +9,7 @@
 
 namespace tas\social\models;
 
+use Exception;
 use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Facebook;
 use tas\social\components\LiveHelperChat;
@@ -20,6 +21,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\httpclient\Client;
+use function json_decode;
 
 class ReplyMessage extends Model{
 	public $receiver_id;
@@ -42,10 +44,10 @@ class ReplyMessage extends Model{
 				$msg_id = $this->sendFB();
 				break;
 			case  Conversation::TYPE_ZALO:
-				$msg_id = $this->sendZalo($this->receiver_id,$this->message);
+				$msg_id = $this->sendZalo();
 				break;
 			case Conversation::TYPE_VIBER:
-				$msg_id = $this->sendViver($this->receiver_id,$this->message);
+				$msg_id = $this->sendViver();
 				break;
 			case Conversation::TYPE_LHC:
 				$msg_id = $this->sendLHC();
@@ -55,7 +57,7 @@ class ReplyMessage extends Model{
 		if($msg_id){
 			$msg                  = new ConversationDetail();
 			$msg->conversation_id = $this->conversations_id;
-			$msg->msg_id          = (string) $msg_id;
+			$msg->msg_id          = (string)$msg_id;
 			$msg->content         = $this->message;
 			$msg->created_time    = (string)time();
 			$msg->sender_id       = $this->sender_id;
@@ -137,63 +139,71 @@ class ReplyMessage extends Model{
 				
 				return (string)$lhc->sendMsg($this->receiver_id,$this->message);
 			}
-			catch(FacebookSDKException $e){
+			catch(Exception $e){
 				Yii::error($e);
 				
 				return null;
 			}
 		}
-		catch(FacebookSDKException $e){
+		catch(Exception $e){
 			Yii::error($e);
 			
 			return null;
 		}
 	}
 	
-	private function sendZalo($receiver,$msg,$type = 'text'){
+	private function sendZalo($type = 'text'){
 		$zalo_config = new ConfigZalo();
 		
-		$oaid      = $zalo_config->oa_id;
-		$data      = json_encode([
-			'uid'     => $receiver,
-			'message' => $msg,
-		]);
-		$timestamp = round(microtime(true) * 1000);
-		$mac       = hash('sha256',$oaid . $data . $timestamp . $zalo_config->oa_secret);
-		
 		$params = [
-			'oaid'      => $oaid,
-			'data'      => $data,
-			'timestamp' => $timestamp,
-			'mac'       => $mac,
+			'recipient' => [
+				'user_id' => $this->receiver_id,
+			],
+			'message'   => [
+				'text' => $this->message,
+			],
 		];
-		\Yii::trace($params);
 		
-		$json_data = json_encode($data);
-		$ch        = curl_init('https://openapi.zaloapp.com/oa/v1/sendmessage/text');
-		curl_setopt($ch,CURLOPT_CUSTOMREQUEST,"POST");
-		curl_setopt($ch,CURLOPT_POSTFIELDS,http_build_query($params));
-		curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-		curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,0);
-		$response = curl_exec($ch);
-		$response = json_decode($response);
-		\Yii::trace($response);
+		\Yii::debug($params);
 		
-		return isset($response->data) ? $response->data->msgId : false;
+		try{
+			$client  = new Client([
+				'baseUrl' => 'https://openapi.zalo.me/v2.0/oa/message?access_token=' . $zalo_config->access_token,
+			]);
+			$request = $client->createRequest()
+			                  ->setFormat(Client::FORMAT_JSON)
+			                  ->setMethod('POST')
+			                  ->setData($params);
+			
+			/** @var \yii\httpclient\Response $response */
+			$response = $request->send();
+			if($response->isOk){
+				Yii::debug($response->content);
+				$response_data = json_decode($response->content,true);
+				
+				return $response_data['data']['message_id'] ?? null;
+			}
+			
+			return null;
+		}
+		catch(InvalidConfigException $e){
+			Yii::error($e);
+			
+			return null;
+		}
 	}
 	
-	private function sendViver($receiver,$msg,$type = 'text'){
+	private function sendViver($type = 'text'){
 		$config = new ViberConfig();
 		$data   = [
-			'receiver'        => $receiver,
+			'receiver'        => $this->receiver_id,
 			'min_api_version' => 1,
 			'sender'          => [
 				'name'   => $config->name,
 				'avatar' => $config->avatar,
 			],
 			'type'            => $type,
-			'text'            => $msg,
+			'text'            => $this->message,
 		];
 		$client = new Client([
 			'baseUrl' => 'https://chatapi.viber.com/pa/send_message',
@@ -219,6 +229,7 @@ class ReplyMessage extends Model{
 		}
 		catch(InvalidConfigException $e){
 			Yii::error($e);
+			
 			return null;
 		}
 	}
